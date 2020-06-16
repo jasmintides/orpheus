@@ -1,0 +1,17 @@
+wd: /data/exploratory/Users/jeff.alvarez/omics-pipeline
+ID: 2020_06_01_A549_ADAR
+Title: "2020-06-01 A549 ADAR"
+HPC_ID: jeff.alvarez
+Contact_name: "Jeff Alvarez"
+Organism: "Human"
+wd: /data/exploratory/Users/jeff.alvarez/omics-pipeline
+fastqs: /data/exploratory/rawData/internal/F19FTSUSAT1780_HUMmkcT_11Feb2020/
+samples: samples.tsv
+units: units.tsv
+ref:
+        fa: /data/exploratory/Users/jeff.alvarez/pipeline_ins/Omicsoft.Human.B37.3.fasta
+        gtf: /data/exploratory/Users/jeff.alvarez/pipeline_ins/Omicsoft.Human.B37.3.OmicsoftGene20130723.gtf
+        build: Human.B37.3
+trimming:
+        skip: false
+known_sites: /data/exploratory/Users/jeff.alvarez/pipeline_ins/dbsnp_138.b37.vcf.gz 

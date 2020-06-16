@@ -1,7 +1,7 @@
 import glob, os
 import pandas as pd
 
-configfile: "config.yaml"
+configfile: "config/config.docker.yaml"
 
 samples, = glob_wildcards(config['fastqs'] + '/' + '{sample}_1.fq.gz')
 pairs = [1, 2]

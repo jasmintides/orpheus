@@ -26,7 +26,7 @@ rule mark_duplicates:
 	log:
 		"logs/picard/dedup/{sample}.log"
 	params:
-		"REMOVE_DUPLICATES=true"
+		"-Xmx4g REMOVE_DUPLICATES=true"
 	wrapper:
 		"0.57.0/bio/picard/markduplicates"
 
@@ -74,7 +74,7 @@ rule haplotype_caller:
 	log:
 		"logs/gatk/haplotypecaller/{sample}.log"
 	threads:
-		12
+		4
 	params:
 		extra = "--dont-use-soft-clipped-bases true -stand-call-conf 20.0",
 		java_opts = ""
