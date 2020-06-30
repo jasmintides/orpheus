@@ -9,8 +9,9 @@ rule fastqc:
 
 rule multiqc:
 	input:
-		expand("outs/qc/{sample}_{pair}_fastqc.zip", sample = samples, pair = pairs)
+		expand("outs/qc/{sample}_{pair}_fastqc.zip", sample = samples, pair = pairs),
+		expand("outs/star/{sample}/Log.final.out", sample = samples, pair = pairs)
 	output:
-		"outs/qc/multiqc_report.html"
+		"outs/{}/multiqc_report.html".format(config["ID"])
 	wrapper:
 		"0.51.3/bio/multiqc"

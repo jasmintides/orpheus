@@ -5,7 +5,7 @@ HPC_ID: jeff.alvarez
 Contact_name: "Jeff Alvarez"
 Organism: "Human"
 wd: /data/exploratory/Users/jeff.alvarez/omics-pipeline
-fastqs: /data/exploratory/rawData/internal/F19FTSUSAT1780_HUMmkcT_11Feb2020/
+fastqs: /data/exploratory/rawData/internal/F19FTSUSAT1780_HUMmkcT_11Feb2020
 samples: samples.tsv
 units: units.tsv
 ref:

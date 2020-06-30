@@ -30,7 +30,7 @@ rule star_pe_multi:
 		"logs/star/{sample}.log"
 	params:
 		index = "outs/{}/{}".format(config["ID"], config["ref"]["build"]),
-		extra = "--outSAMtype BAM SortedByCoordinate --outFilterMatchNminOverLread 0.95"
+		extra = "--outSAMtype BAM SortedByCoordinate --outFilterMismatchNmax 10"
 	output:
 		"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
 	threads:

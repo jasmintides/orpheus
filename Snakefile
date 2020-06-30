@@ -1,7 +1,7 @@
 import glob, os
 import pandas as pd
 
-configfile: "config/config.docker.yaml"
+configfile: "config/config.2020_06_25.yaml"
 
 samples, = glob_wildcards(config['fastqs'] + '/' + '{sample}_1.fq.gz')
 pairs = [1, 2]
@@ -11,12 +11,14 @@ rule all:
 	input:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
 		expand('outs/star/{sample}/Aligned.sortedByCoord.out.bam', sample = samples),
-		"outs/{}/calls/all.filtered.vcf.gz".format(config["ID"])
+		"outs/{}/calls/all.filtered.vcf.gz".format(config["ID"]),
+#		expand("outs/qc/{sample}_{pair}_fastqc.zip", sample = samples, pair = pairs),
+		"outs/{}/multiqc_report.html".format(config["ID"]) 
 
 
 ### include rules ###
 include: 'workflow/rules/align.smk'
-#include: 'workflow/rules/qc.smk'
+include: 'workflow/rules/qc.smk'
 include: 'workflow/rules/call.smk'
 
 #rule raw_counts:

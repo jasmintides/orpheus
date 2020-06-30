@@ -1,0 +1,11 @@
+ID: 2020_06_25_A549_ADAR
+Title: "2020-06-25 A549 ADAR"
+HPC_ID: jeff.alvarez
+Contact_name: "Jeff Alvarez"
+Organism: "Human"
+fastqs: /input/
+ref:
+        fa: /ref/Omicsoft.Human.B37.3.fasta
+        gtf: /ref/Omicsoft.Human.B37.3.OmicsoftGene20130723.gtf
+        build: Human_B37.3
+known_sites: /ref/dbsnp_138.b37.vcf.gz
