@@ -68,7 +68,7 @@ rule haplotype_caller:
 		bam = "outs/recal/{sample}.bam",
 		ref = config['ref']['fa']
 	output:
-		gvcf = temp("outs/calls/{sample}.g.vcf.gz")
+		gvcf = "outs/calls/{sample}.g.vcf.gz"
 	benchmark:
 		"benchmarks/call/04_haplotype_caller.{sample}.txt"
 	log:
