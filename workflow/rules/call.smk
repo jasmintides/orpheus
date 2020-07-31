@@ -8,8 +8,8 @@ rule replace_rg:
 	log:
 		"logs/picard/replace_rg/{sample}.log"
 	params:
-		"RGID={sample} RGLB={sample} RGPL={sample} RGPU={sample} RGSM={sample} "
-		"VALIDATION_STRINGENCY=LENIENT"
+		"RGID={sample} RGLB={sample} RGPL={sample} RGPU={sample} RGSM={sample} SO=coordinate "
+		"VALIDATION_STRINGENCY=SILENT"
 	wrapper:
 		"0.57.0/bio/picard/addorreplacereadgroups"
 
@@ -23,8 +23,6 @@ rule mark_duplicates:
 		"benchmarks/call/01_mark_duplicates.{sample}.txt"
 	log:
 		"logs/picard/dedup/{sample}.log"
-	params:
-		""
 	wrapper:
 		"0.57.0/bio/picard/markduplicates"
 
@@ -56,7 +54,7 @@ rule gatk_bqsr:
 	log:
 		"logs/gatk/bqsr/{sample}.log"
 	params:
-		extra = "",
+		extra = "-DF NotDuplicateReadFilter",
 		java_opts = ""
 	wrapper:
 		"0.57.0/bio/gatk/baserecalibrator"
@@ -74,7 +72,7 @@ rule haplotype_caller:
 	threads:
 		4
 	params:
-		extra = "--dont-use-soft-clipped-bases true -stand-call-conf 20.0",
+		extra = "--dont-use-soft-clipped-bases true -stand-call-conf 10.0 -DF NotDuplicateReadFilter --base-quality-score-threshold 10",
 		java_opts = ""
 	wrapper:
 		"0.57.0/bio/gatk/haplotypecaller"

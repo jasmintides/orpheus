@@ -4,7 +4,6 @@ import pandas as pd
 configfile: "config/config.A549_ADAR.yaml"
 
 samples, = glob_wildcards(config['fastqs'] + '/' + '{sample}_1.fq.gz')
-samples = ["RNA1A", "RNA2A"]
 pairs = [1, 2]
 ID = config['ID']
 print(samples)
