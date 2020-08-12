@@ -57,8 +57,8 @@ The config file takes the following values:
 <h4>Docker</h4>
 The workflow may also be deployed as a Docker image, where a conda environment
 is set up with Snakemake and dependencies installed. When run, the conda
-environment is activated then the Snakemake directory and input files are
-mounted as <code>analysis</code> and <code>input</code> respectively:
+environment is activated then the Snakemake directory, input FASTQ files,
+and reference data are mounted as <code>analysis</code>, <code>input</code>, and <code>ref</code> respectively:
 
 ```
 docker run -it --rm \
