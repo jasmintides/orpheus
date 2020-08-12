@@ -7,7 +7,7 @@ RNA-seq data based on
 <b>IMPORTANT</b>: Orpheus was written with [Snakemake](https://snakemake.readthedocs.io/en/stable/),
 a Python-based workflow manager. The recommended way to install Snakemake is via
 Conda, which is not installed system-wide on HPC at the time of writing. Therefore,
-<b>the easiest way to start working with Omics Pipeline is to use the Docker method
+<b>the easiest way to start working with Orpheus Pipeline is to use the Docker method
 described in</b> [Step 3](#step-3-execute-workflow), 
 which comes installed with Snakemake and associated dependencies.
 
