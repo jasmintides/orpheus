@@ -21,12 +21,12 @@ git clone https://git.agios.local/Jeff.Alvarez/orpheus.git
 ```
 <h3>Step 2: Configure workflow</h3>
 The workflow can be configured with the config file located in the 
-<code>config/config.test.yaml</code> file. The layout is based on the config
+<code>config/config.local.yaml</code> file. The layout is based on the config
 file used for the [Array Studio RNA-seq pipeline](https://git.agios.local/Mark.Fletcher/array_studio_RNAseq_pipeline):
 
 ```
-ID: 2020_04_30_test
-Title: "2020-04-30 Test"
+ID: 2020_08_12_test
+Title: "2020-08-12 Test"
 HPC_ID: jeff.alvarez
 Contact_name: "Jeff Alvarez"
 Organism: "Human"
@@ -66,7 +66,7 @@ docker run -it --rm \
     -v /data/exploratory/Users/jeff.alvarez/orpheus:/home/user/analysis \
     -v /data/exploratory/Users/jeff.alvarez/orpheus/data/samples/single:/home/user/input \
     -v /data/exploratory/Users/jeff.alvarez/orpheus/data:/home/user/ref \
-    omics-pipeline:1.0 /bin/bash -c \
+    jeff.alvarez/orpheus:latest /bin/bash -c \
     "conda run -n snakemake \
     snakemake -j 6 --keep-remote --use-conda \
     --directory /home/user/analysis \
