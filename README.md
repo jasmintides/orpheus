@@ -1,6 +1,7 @@
 <h1>Orpheus</h1>
-This workflow performs variant calling and expression quantification with
-STAR, GATK, and RSEM.
+This workflow performs expression quantification and variant calling on
+RNA-seq data based on 
+[GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-).
 <h2>Usage</h2>
 <h3>Step 0: Install Snakemake</h3>
 <b>IMPORTANT</b>: Orpheus was written with [Snakemake](https://snakemake.readthedocs.io/en/stable/),
