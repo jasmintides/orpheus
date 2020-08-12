@@ -1,6 +1,6 @@
 <h1>Orpheus</h1>
-This workflow performs expression quantification and variant calling on
-RNA-seq data based on 
+Orpheus (Omicsoft-inspired RNA-seq pipeline) is a workflow that performs 
+expression quantification and variant calling on RNA-seq data based on 
 [GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-).
 <h2>Usage</h2>
 <h3>Step 0: Install Snakemake</h3>
