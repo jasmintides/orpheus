@@ -22,17 +22,16 @@ rule star_pe_multi:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
 		fq1 = [config["fastqs"] + "{sample}_1.fq.gz"],
 		fq2 = [config["fastqs"] + "{sample}_2.fq.gz"]
-	output:
-		"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
 	benchmark:
-		"benchmarks/align/01_star_align.{sample}.txt"
+		"benchmarks/{ID}/align/01_star_align.{sample}.txt"
 	log:
-		"logs/star/{sample}.log"
+		"logs/{ID}/star/{sample}.log"
 	params:
 		index = "outs/{}/{}".format(config["ID"], config["ref"]["build"]),
 		extra = "--outSAMtype BAM SortedByCoordinate --outFilterMismatchNmax 10"
 	output:
-		"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
+	#	"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
+		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"
 	threads:
 		6
 	wrapper:
