@@ -1,17 +1,17 @@
 rule fastqc:
 	input:
-		config['fastqs'] + '/{sample}_{pair}.fq.gz' 
+		config['fastqs'] + '{sample}_{pair}.fq.gz' 
 	output:
-		html="outs/qc/{sample}_{pair}.html",
-		zip="outs/qc/{sample}_{pair}_fastqc.zip"
+		html="outs/{ID}/qc/{sample}_{pair}.html",
+		zip=temp("outs/{ID}/qc/{sample}_{pair}_fastqc.zip")
 	wrapper:
 		"0.31.1/bio/fastqc"
 
 rule multiqc:
 	input:
-		expand("outs/qc/{sample}_{pair}_fastqc.zip", sample = samples, pair = pairs),
-		expand("outs/star/{sample}/Log.final.out", sample = samples, pair = pairs)
+		expand("outs/{ID}/qc/{sample}_{pair}_fastqc.zip", ID = ID, sample = samples, pair = pairs),
+		expand("outs/{ID}/star/{sample}/Log.final.out", ID = ID, sample = samples, pair = pairs)
 	output:
-		"outs/{}/multiqc_report.html".format(config["ID"])
+		"outs/{}/qc/multiqc_report.{}.html".format(config["ID"], config["ID"])
 	wrapper:
 		"0.51.3/bio/multiqc"

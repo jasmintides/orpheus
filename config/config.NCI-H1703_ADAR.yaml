@@ -1,9 +1,9 @@
-ID: 2020_09_22_A549_ADAR
-Title: "2020-09-22 A549 ADAR"
+ID: 2020_09_23_NCI-H1703_ADAR
+Title: "2020-09-23 NCI-H1703 ADAR"
 HPC_ID: jeff.alvarez
 Contact_name: "Jeff Alvarez"
 Organism: "Human"
-fastqs: /data/exploratory/rawData/internal/ADAR/A549/
+fastqs: /data/exploratory/rawData/internal/ADAR/NCI-H1703/
 ref:
         fa: /data/exploratory/Users/jeff.alvarez/pipeline_ins/Omicsoft.Human.B37.3.fasta
         gtf: /data/exploratory/Users/jeff.alvarez/pipeline_ins/Omicsoft.Human.B37.3.OmicsoftGene20130723.gtf

@@ -1,14 +1,9 @@
-wd: /data/exploratory/Users/jeff.alvarez/omics-pipeline
 ID: 2020_09_17_CAL27_ADAR
 Title: "2020-09-17 CAL27 ADAR"
 HPC_ID: jeff.alvarez
 Contact_name: "Jeff Alvarez"
 Organism: "Human"
-wd: /data/exploratory/Users/jeff.alvarez/omics-pipeline
-#fastqs: /data/exploratory/rawData/internal/ADAR/CAL27/
 fastqs: /data/exploratory/rawData/internal/F19FTSUSAT1780_HUMmkcT_11Feb2020/
-samples: samples.tsv
-units: units.tsv
 ref:
         fa: /data/exploratory/Users/jeff.alvarez/pipeline_ins/Omicsoft.Human.B37.3.fasta
         gtf: /data/exploratory/Users/jeff.alvarez/pipeline_ins/Omicsoft.Human.B37.3.OmicsoftGene20130723.gtf

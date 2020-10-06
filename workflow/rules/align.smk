@@ -25,13 +25,14 @@ rule star_pe_multi:
 	benchmark:
 		"benchmarks/{ID}/align/01_star_align.{sample}.txt"
 	log:
-		"logs/{ID}/star/{sample}.log"
+		"logs/{ID}/star/{sample}/{sample}.log"
 	params:
 		index = "outs/{}/{}".format(config["ID"], config["ref"]["build"]),
 		extra = "--outSAMtype BAM SortedByCoordinate --outFilterMismatchNmax 10"
 	output:
 	#	"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
-		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"
+		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam",
+		temp("outs/{ID}/star/{sample}/Log.final.out")
 	threads:
 		6
 	wrapper:

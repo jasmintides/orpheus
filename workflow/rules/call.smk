@@ -24,7 +24,7 @@ rule mark_duplicates:
 	log:
 		"logs/{ID}/picard/dedup/{sample}.log"
 	params:
-		""
+		mem = "-Xmx8g"
 	wrapper:
 		"0.57.0/bio/picard/markduplicates"
 
@@ -40,7 +40,7 @@ rule split_n_cigar_reads:
 		"logs/{ID}/gatk/splitNCIGARreads/{sample}.log"
 	params:
 		extra = "--tmp-dir outs/{ID}/star/{sample}",
-		java_opts = ""
+		java_opts = "-Xmx4g"
 	wrapper:
 		"0.57.0/bio/gatk/splitncigarreads"
 
@@ -56,8 +56,8 @@ rule gatk_bqsr:
 	log:
 		"logs/{ID}/gatk/bqsr/{sample}.log"
 	params:
-		extra = "-DF NotDuplicateReadFilter --tmp-dir outs/split",
-		java_opts = ""
+		extra = "-DF NotDuplicateReadFilter --tmp-dir outs/{ID}/split",
+		java_opts = "-Xmx4g"
 	wrapper:
 		"0.57.0/bio/gatk/baserecalibrator"
 
@@ -74,7 +74,7 @@ rule haplotype_caller:
 	threads:
 		4
 	params:
-		extra = "--dont-use-soft-clipped-bases true -DF NotDuplicateReadFilter -RF MappingQualityReadFilter --minimum-mapping-quality 0 --base-quality-score-threshold 13 -mbq 13 -L /data/exploratory/Users/jeff.alvarez/adar/editing_analysis/A549/input/data/Alu.filtered.bed --tmp-dir outs/recal",
+		extra = "--dont-use-soft-clipped-bases true -DF NotDuplicateReadFilter -RF MappingQualityReadFilter --minimum-mapping-quality 0 --base-quality-score-threshold 13 -mbq 13 -L /data/exploratory/Users/jeff.alvarez/adar/editing_analysis/A549/input/data/Alu.filtered.bed --tmp-dir outs/{ID}/recal",
 		java_opts = ""
 	wrapper:
 		"0.57.0/bio/gatk/haplotypecaller"

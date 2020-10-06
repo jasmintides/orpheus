@@ -1,7 +1,7 @@
 import glob, os
 import pandas as pd
 
-configfile: "config/config.CAL27_ADAR.yaml"
+configfile: "config/config.NCI-H1703_ADAR.yaml"
 
 samples, = glob_wildcards(config['fastqs'] + '/' + '{sample}_1.fq.gz')
 pairs = [1, 2]
@@ -11,19 +11,20 @@ print(samples)
 
 rule all:
 	input:
+		## STAR index ##
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
-#		expand('outs/star/{sample}/Aligned.sortedByCoord.out.bam', sample = samples),
+		## BAM ##
 		expand('outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam', ID = ID, sample = samples),
-#		expand("outs/calls/filtered/{sample}.vcf.gz", sample = samples),
-#		"outs/{}/calls/all.filtered.vcf.gz".format(config["ID"]),
-#		expand("outs/qc/{sample}_{pair}_fastqc.zip", sample = samples, pair = pairs),
-#		"outs/{}/multiqc_report.html".format(config["ID"]) 
+		## QC report (fastqc, STAR) ##
+		"outs/{}/qc/multiqc_report.{}.html".format(config["ID"], config["ID"]),
+		## Filtered VCFs ##
+		expand("outs/{ID}/calls/filtered/{sample}.vcf.gz", ID = ID, sample = samples)
 
 
 ### include rules ###
 include: 'workflow/rules/align.smk'
-#include: 'workflow/rules/qc.smk'
-#include: 'workflow/rules/call.smk'
+include: 'workflow/rules/qc.smk'
+include: 'workflow/rules/call.smk'
 
 #rule raw_counts:
 #	input:
