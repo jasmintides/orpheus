@@ -28,10 +28,11 @@ rule star_pe_multi:
 		"logs/{ID}/star/{sample}/{sample}.log"
 	params:
 		index = "outs/{}/{}".format(config["ID"], config["ref"]["build"]),
-		extra = "--outSAMtype BAM SortedByCoordinate --outFilterMismatchNmax 10"
+		extra = "--outSAMtype BAM SortedByCoordinate --outFilterMismatchNmax 10 "
+			"--quantMode TranscriptomeSAM GeneCounts"
 	output:
 	#	"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
-		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam",
+		"outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
 		temp("outs/{ID}/star/{sample}/Log.final.out")
 	threads:
 		6
