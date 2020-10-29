@@ -29,3 +29,6 @@ SHELL ["conda", "run", "-n", "snakemake", "/bin/bash", "-c"]
 
 #Set path
 SHELL ["export", "PATH=/opt/conda/envs/snakemake/bin:$PATH"]
+
+# Set working directory
+WORKDIR /analysis

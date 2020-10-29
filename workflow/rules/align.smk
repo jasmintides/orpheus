@@ -3,7 +3,7 @@ rule star_index_new:
 		fasta = config["ref"]["fa"],
 		gtf = config["ref"]["gtf"],
 	threads:
-		12
+		4
 	params:
 		extra = "",
 		build = config["ref"]["build"],
@@ -22,18 +22,19 @@ rule star_pe_multi:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
 		fq1 = [config["fastqs"] + "{sample}_1.fq.gz"],
 		fq2 = [config["fastqs"] + "{sample}_2.fq.gz"]
-	output:
-		"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
 	benchmark:
-		"benchmarks/align/01_star_align.{sample}.txt"
+		"benchmarks/{ID}/align/01_star_align.{sample}.txt"
 	log:
-		"logs/star/{sample}.log"
+		"logs/{ID}/star/{sample}/{sample}.log"
 	params:
 		index = "outs/{}/{}".format(config["ID"], config["ref"]["build"]),
-		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate"
+		extra = "--outSAMtype BAM SortedByCoordinate "
+			"--quantMode TranscriptomeSAM GeneCounts"
 	output:
-		"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
+	#	"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
+		"outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
+		temp("outs/{ID}/star/{sample}/Log.final.out")
 	threads:
-		12
+		4
 	wrapper:
 		"0.59.1/bio/star/align"
