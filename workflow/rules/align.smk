@@ -3,7 +3,7 @@ rule star_index_new:
 		fasta = config["ref"]["fa"],
 		gtf = config["ref"]["gtf"],
 	threads:
-		4
+		8
 	params:
 		extra = "",
 		build = config["ref"]["build"],
@@ -28,13 +28,13 @@ rule star_pe_multi:
 		"logs/{ID}/star/{sample}/{sample}.log"
 	params:
 		index = "outs/{}/{}".format(config["ID"], config["ref"]["build"]),
-		extra = "--outSAMtype BAM SortedByCoordinate "
+		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate "
 			"--quantMode TranscriptomeSAM GeneCounts"
 	output:
 	#	"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
 		"outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
 		temp("outs/{ID}/star/{sample}/Log.final.out")
 	threads:
-		4
+		8
 	wrapper:
 		"0.59.1/bio/star/align"
