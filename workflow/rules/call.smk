@@ -1,4 +1,5 @@
-rule replace_rg:
+checkpoint replace_rg:
+#rule replace_rg:
 	input:
 		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"
 	output:

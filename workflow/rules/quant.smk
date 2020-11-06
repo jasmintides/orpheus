@@ -6,7 +6,7 @@ rule rsem_prepare_reference:
 		ID = config["ID"],
 		build = config["ref"]["build"]
 	output:
-		"outs/{}/ref/{}.transcripts.fa".format(config["ID"], config["ref"]["build"])
+		temp("outs/{}/ref/{}.transcripts.fa".format(config["ID"], config["ref"]["build"]))
 	conda:
 		"../envs/quant.yaml"
 	threads:
@@ -22,8 +22,8 @@ rule rsem_calculate_expression:
 		ID = config["ID"],
 		build = config["ref"]["build"]
 	output:
-		"outs/{ID}/RSEM/{sample}.isoforms.results",
-		"outs/{ID}/RSEM/{sample}.genes.results"
+		temp("outs/{ID}/RSEM/{sample}.isoforms.results"),
+		temp("outs/{ID}/RSEM/{sample}.genes.results")
 	benchmark:
 		"benchmarks/{ID}/quant/01_rsem.{sample}.txt"
 	log:
@@ -40,11 +40,11 @@ rule rsem_calculate_expression:
 
 rule create_gene_ids_star:
 	input:
-		template = "outs/{}/star/{}/ReadsPerGene.out.tab".format(config["ID"], samples[0])
+		template = "outs/{}/star/{}/ReadsPerGene.out.tab".format(config["ID"], list_of_samples[0])
 	params:
 		ID = config["ID"]
 	output:
-		"outs/{}/star/gene_ids.txt".format(config["ID"])
+		temp("outs/{}/star/gene_ids.txt".format(config["ID"]))
 	shell:
 		"tail -n +5 {input.template} | cut -f1 | sed '1i \n' > "
 		"outs/{params.ID}/star/gene_ids.txt"
@@ -53,7 +53,7 @@ rule create_raw_counts_star:
 	input:
 		ind_counts = "outs/{ID}/star/{sample}/ReadsPerGene.out.tab"
 	output:
-		"outs/{ID}/star/{sample}/{sample}.counts"
+		temp("outs/{ID}/star/{sample}/{sample}.counts")
 	shell:
 		"tail -n +5 {input.ind_counts} | cut -f4 | sed '1i {wildcards.sample}' > "
 		"outs/{wildcards.ID}/star/{wildcards.sample}/{wildcards.sample}.counts"
@@ -61,22 +61,23 @@ rule create_raw_counts_star:
 rule create_raw_counts_table:
 	input:
 		gene_ids = "outs/{}/star/gene_ids.txt".format(config["ID"]),
-		ind_counts = expand('outs/{ID}/star/{sample}/{sample}.counts', ID = ID, sample = samples)
+		ind_counts = expand('outs/{ID}/star/{sample}/{sample}.counts', ID = ID, sample = list_of_samples)
 	params:
 		ID = config["ID"]
 	output:
 		counts = "outs/{ID}/star/raw_counts.tsv"
 	shell:
 		"paste outs/{params.ID}/star/gene_ids.txt {input.ind_counts} > {output.counts}"
+
 ###### RSEM (TPM) ######
 
 rule create_gene_ids_rsem:
 	input:
-		template = "outs/{}/RSEM/{}.genes.results".format(config["ID"], samples[0])
+		template = "outs/{}/RSEM/{}.genes.results".format(config["ID"], list_of_samples[0])
 	params:
 		ID = config["ID"]
 	output:
-		"outs/{}/RSEM/gene_ids.txt".format(config["ID"])
+		temp("outs/{}/RSEM/gene_ids.txt".format(config["ID"]))
 	shell:
 		"tail -n +2 {input.template} | cut -f1 | sed '1i \n' > "
 		"outs/{params.ID}/RSEM/gene_ids.txt"
@@ -85,7 +86,7 @@ rule create_tpm_counts:
 	input:
 		ind_counts = "outs/{ID}/RSEM/{sample}.genes.results"
 	output:
-		"outs/{ID}/RSEM/{sample}.counts"
+		temp("outs/{ID}/RSEM/{sample}.counts")
 	shell:
 		"tail -n +2 {input.ind_counts} | cut -f6 | sed '1i {wildcards.sample}' > "
 		"outs/{wildcards.ID}/RSEM/{wildcards.sample}.counts"
@@ -93,7 +94,7 @@ rule create_tpm_counts:
 rule aggregate_tpm_counts_table:
 	input:
 		gene_ids = "outs/{}/RSEM/gene_ids.txt".format(config["ID"]),
-		ind_counts = expand('outs/{ID}/RSEM/{sample}.counts', ID = ID, sample = samples)
+		ind_counts = expand('outs/{ID}/RSEM/{sample}.counts', ID = ID, sample = list_of_samples)
 	params:
 		ID = config["ID"]
 	output:

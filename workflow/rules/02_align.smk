@@ -17,11 +17,19 @@ rule star_index_new:
 	wrapper:
 		"0.59.1/bio/star/index"
 
+def get_trimmed(wildcards):
+	if not is_single_end(wildcards.sample):
+		# paired-end sample
+		return {'fq1': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 1, **wildcards),
+			'fq2': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 2, **wildcards)}
+	# single end sample
+	else:
+		return "outs/{ID}/{sample}.fq.gz".format(**wildcards)	
+
 rule star_pe_multi:
 	input:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
-		fq1 = [config["fastqs"] + "{sample}_1.fq.gz"],
-		fq2 = [config["fastqs"] + "{sample}_2.fq.gz"]
+		unpack(get_trimmed)
 	benchmark:
 		"benchmarks/{ID}/align/01_star_align.{sample}.txt"
 	log:
@@ -31,9 +39,9 @@ rule star_pe_multi:
 		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate "
 			"--quantMode TranscriptomeSAM GeneCounts"
 	output:
-	#	"outs/star/{sample}/Aligned.sortedByCoord.out.bam"
-		"outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
-		temp("outs/{ID}/star/{sample}/Log.final.out")
+		temp("outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"),
+		temp("outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam"),
+		log = temp("outs/{ID}/star/{sample}/Log.final.out")
 	threads:
 		8
 	wrapper:
