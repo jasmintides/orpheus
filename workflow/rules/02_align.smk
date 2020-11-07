@@ -26,7 +26,7 @@ def get_trimmed(wildcards):
 	else:
 		return "outs/{ID}/{sample}.fq.gz".format(**wildcards)	
 
-rule star_pe_multi:
+checkpoint star_pe_multi:
 	input:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
 		unpack(get_trimmed)
@@ -39,6 +39,7 @@ rule star_pe_multi:
 		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate "
 			"--quantMode TranscriptomeSAM GeneCounts"
 	output:
+		temp("outs/{ID}/star/{sample}/ReadsPerGene.out.tab"),
 		temp("outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"),
 		temp("outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam"),
 		log = temp("outs/{ID}/star/{sample}/Log.final.out")
@@ -46,3 +47,20 @@ rule star_pe_multi:
 		8
 	wrapper:
 		"0.59.1/bio/star/align"
+
+def get_template(wildcards):
+	checkpoint_output = checkpoints.star_pe_multi.get(ID = wildcards.ID, sample = list_of_samples[0]).output[0]
+	#template = checkpoint_output[0]
+	return {'template': checkpoint_output[0]}
+
+rule create_gene_ids_star:
+	input:
+		unpack(get_template)
+	params:
+		ID = config["ID"]
+	output:
+		#temp("outs/{}/star/gene_ids.txt".format(config["ID"]))
+		temp("outs/{ID}/star/gene_ids.txt")
+	shell:
+		"tail -n +5 {input} | cut -f1 | sed '1i \n' > "
+		"outs/{params.ID}/star/gene_ids.txt"

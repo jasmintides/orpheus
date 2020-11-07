@@ -1,5 +1,5 @@
 sample	fq1	fq2
-untreated	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/untreated_1.fq.gz	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/untreated_2.fq.gz
-alb	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/alb_1.fq.gz	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/alb_2.fq.gz
-dex	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/dex_1.fq.gz	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/dex_2.fq.gz
-alb_dex	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/alb_dex_1.fq.gz	/data/exploratory/Users/jeff.alvarez/orpheus/data/samples/alb_dex_2.fq.gz
+untreated	data/samples/untreated_1.fq.gz	data/samples/untreated_2.fq.gz
+alb	data/samples/alb_1.fq.gz	data/samples/alb_2.fq.gz
+dex	data/samples/dex_1.fq.gz	data/samples/dex_2.fq.gz
+alb_dex	data/samples/alb_dex_1.fq.gz	data/samples/alb_dex_2.fq.gz

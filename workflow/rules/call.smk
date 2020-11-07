@@ -1,5 +1,4 @@
-checkpoint replace_rg:
-#rule replace_rg:
+rule replace_rg:
 	input:
 		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"
 	output:
@@ -49,7 +48,7 @@ rule gatk_bqsr:
 	input:
 		bam = "outs/{ID}/split/{sample}.bam",
 		ref = config['ref']['fa'],
-		known = config["known_sites"]
+		known = config["ref"]["known_sites"]
 	output:
 		bam = temp("outs/{ID}/recal/{sample}.bam")
 	benchmark:

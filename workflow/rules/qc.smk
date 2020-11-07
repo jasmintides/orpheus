@@ -17,7 +17,7 @@ rule fastqc_fq2:
 	input:
 		get_fq2
 	output:
-		html="outs/{ID}/qc/{sample}_2.html",
+		html=temp("outs/{ID}/qc/{sample}_2.html"),
 		zip=temp("outs/{ID}/qc/{sample}_2_fastqc.zip")
 	wrapper:
 		"0.31.1/bio/fastqc"

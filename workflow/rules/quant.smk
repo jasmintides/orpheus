@@ -6,17 +6,21 @@ rule rsem_prepare_reference:
 		ID = config["ID"],
 		build = config["ref"]["build"]
 	output:
-		temp("outs/{}/ref/{}.transcripts.fa".format(config["ID"], config["ref"]["build"]))
+		#temp("outs/{}/ref/{}.transcripts.fa".format(config["ID"], config["ref"]["build"])),
+		directory("outs/{}/ref".format(config["ID"]))
 	conda:
 		"../envs/quant.yaml"
 	threads:
 		4
 	shell:
+		"rm -rf outs/{params.ID}/ref && "
+		"mkdir outs/{params.ID}/ref && "
 		"rsem-prepare-reference --num-threads {threads} --gtf {input.gtf} "
 		"{input.fasta} outs/{params.ID}/ref/{params.build}"
 
 rule rsem_calculate_expression:
 	input:
+		ref = directory("outs/{}/ref".format(config["ID"])),
 		bam = "outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam"
 	params:
 		ID = config["ID"],
@@ -35,19 +39,20 @@ rule rsem_calculate_expression:
 	shell:
 		"rsem-calculate-expression --num-threads {threads} "
 		"--fragment-length-max 1000 --no-bam-output --paired-end "
-		"--bam {input.bam} outs/{params.ID}/ref/{params.build} "
+		#"--bam {input.bam} outs/{params.ID}/ref/{params.build} "
+		"--bam {input.bam} {input.ref}/{params.build} "
 		"outs/{ID}/RSEM/{wildcards.sample}"
 
-rule create_gene_ids_star:
-	input:
-		template = "outs/{}/star/{}/ReadsPerGene.out.tab".format(config["ID"], list_of_samples[0])
-	params:
-		ID = config["ID"]
-	output:
-		temp("outs/{}/star/gene_ids.txt".format(config["ID"]))
-	shell:
-		"tail -n +5 {input.template} | cut -f1 | sed '1i \n' > "
-		"outs/{params.ID}/star/gene_ids.txt"
+#rule create_gene_ids_star:
+#	input:
+	#	template = "outs/{}/star/{}/ReadsPerGene.out.tab".format(config["ID"], list_of_samples[0])
+	#params:
+	#	ID = config["ID"]
+	#output:
+	#	temp("outs/{}/star/gene_ids.txt".format(config["ID"]))
+	#shell:
+	#	"tail -n +5 {input.template} | cut -f1 | sed '1i \n' > "
+	#	"outs/{params.ID}/star/gene_ids.txt"
 
 rule create_raw_counts_star:
 	input:
@@ -71,7 +76,7 @@ rule create_raw_counts_table:
 
 ###### RSEM (TPM) ######
 
-rule create_gene_ids_rsem:
+checkpoint create_gene_ids_rsem:
 	input:
 		template = "outs/{}/RSEM/{}.genes.results".format(config["ID"], list_of_samples[0])
 	params:

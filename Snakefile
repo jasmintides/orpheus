@@ -1,10 +1,11 @@
 import pandas as pd
 
-configfile: "config/config.test.yaml"
+configfile: "workflow/config/config.test.yaml"
 
 samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
 list_of_samples = samples["sample"].tolist()
 ID = config['ID']
+template_sample = list_of_samples[0]
 
 rule all:
 	input:
@@ -48,6 +49,6 @@ include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
 include: 'workflow/rules/02_align.smk'
 include: 'workflow/rules/qc.smk'
-if config["call_variants"] is True:
-	include: "workflow/rules/call.smk"
+include: "workflow/rules/call.smk"
 include: "workflow/rules/quant.smk"
+
