@@ -1,59 +1,67 @@
 <h1>Orpheus</h1>
 Orpheus (Omicsoft-inspired RNA-seq pipeline) is a workflow that performs 
-expression quantification and variant calling on RNA-seq data based on 
-[GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-).
+quality control, alignment, expression quantification and variant calling on 
+RNA-seq data based on  [GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-).
+It was written with the Python-based workflow manager
+[Snakemake](https://snakemake.readthedocs.io/en/stable/).
+
 <h2>Usage</h2>
 <h3>Step 0: Install Snakemake</h3>
-<b>IMPORTANT</b>: Orpheus was written with [Snakemake](https://snakemake.readthedocs.io/en/stable/),
-a Python-based workflow manager. The recommended way to install Snakemake is via
-Conda, which is not installed system-wide on HPC at the time of writing. Therefore,
-<b>the easiest way to start working with Orpheus Pipeline is to use the Docker method
-described in</b> [Step 3](#step-3-execute-workflow), 
-which comes installed with Snakemake and associated dependencies.
+The recommended way to install Snakemake is with
+[Conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html#installation-via-conda).
+This method yields your own Conda environment where Snakemake is run, and
+where all software dependencies are installed and managed.
 
-<h3>Step 1: Get workflow</h3>
+One caveat is that Conda is not installed system-wide on HPC at the time of 
+writing. Therefore, the easiest way to start working with Orpheus is to use the 
+Docker method described in</b> [Step 3](#step-3-execute-workflow),  which comes 
+installed with Snakemake and associated dependencies.
+
+<h3>Step 1: Get Orpheus</h3>
 [Clone](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
-the repo to the desired working directory for the concrete project/run on
-your machine:
+the repo to your path of choice on HPC or a local machine:
 
 ```
 git clone https://git.agios.local/Jeff.Alvarez/orpheus.git
 ```
-<h3>Step 2: Configure workflow</h3>
-The workflow can be configured with the config file located in the 
-<code>config/config.local.yaml</code> file. The layout is based on the config
-file used for the [Array Studio RNA-seq pipeline](https://git.agios.local/Mark.Fletcher/array_studio_RNAseq_pipeline):
+<h3>Step 2: Configure Orpheus</h3>
+Analysis names and reference data are specified with a config file. The layout 
+is based on the config file used for the 
+[Array Studio RNA-seq pipeline](https://git.agios.local/Mark.Fletcher/array_studio_RNAseq_pipeline).
+The example shown below is based on the config file 
+<code>workflow/config/config.test.yaml</code>, which was made to run the test
+data:
 
 ```
-ID: 2020_08_12_test
-Title: "2020-08-12 Test"
-HPC_ID: jeff.alvarez
-Contact_name: "Jeff Alvarez"
+ID: 20XX_11_11_test
+Title: "YYYY-MM-DD Test"
+HPC_ID: jane.doe
+Contact_name: "Jane Doe"
 Organism: "Human"
-fastqs: /data/exploratory/Users/jeff.alvarez/orpheus/data/samples/single/
+samples: /path/to/sample_sheet.tsv
 ref:
-        fa: /data/exploratory/Users/jeff.alvarez/orpheus/data/Human_B37.3_chr1.fasta
-        gtf: /data/exploratory/Users/jeff.alvarez/orpheus/data/Human_B37.3_chr1.gtf
+        fa: /path/to/Human_B37.3.fasta
+        gtf: /path/to/Human_B37.3.gtf
         build: Human_B37.3
-trimming:
-        skip: false
-known_sites: /data/exploratory/Users/jeff.alvarez/orpheus/data/dbsnp_138.b37.chr_1.vcf.gz
+        known_sites: /path/to/dbsnp_138.b37.vcf.gz
 ```
 The config file takes the following values:
-* <b>ID</b>: Name of the pipeline ID--output directories will take this name.
+* <b>ID</b>: Filename of output directory where analysis files are written.
 * <b>Title</b>: String character for analysis ID.
 * <b>HPC_ID</b>: User ID on HPC.
-* <b>Contact_name</b>: String character of user ID.
-* <b>Organism</b>: "Human" or "Mouse".
-* <b>fastqs</b>: Absolute path to input FASTQ files for pipeline (.fq.gz).
+* <b>Contact_name</b>: String character of HPC ID.
+* <b>samples</b>: Absolute path to sample sheet with input fastqs and metadata.
 * <b>ref</b>: Reference data to be used in alignment and variant calling.
      - <b>fa</b>: Absolute path to fasta file (.fasta).
      - <b>gtf</b>: Absolute path to gene annotation file (.gtf).
      - <b>build</b>: Name of reference genome--output files will use this prefix.
-* <b>trimming</b>: Logical to skip trimming step [[to-do]].
-* <b>known_sites</b>: Absolute path to known variants file (.vcf.gz).
+     - <b>known_sites</b>: Absolute path to lnown variants file (.vcf.gz).
 
-<h3>Step 3: Execute workflow</h3>
+<h3>Step 3: Create sample sheet</h3>
+Input fastqs and metadata are specified with a sample sheet, also based on
+Array Studio.
+
+<h3>Step 4: Execute workflow</h3>
 <h4>Docker</h4>
 The workflow may also be deployed as a Docker image, where a conda environment
 is set up with Snakemake and dependencies installed. When run, the conda
