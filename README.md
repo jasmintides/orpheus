@@ -55,13 +55,20 @@ The config file takes the following values:
      - <b>fa</b>: Absolute path to fasta file (.fasta).
      - <b>gtf</b>: Absolute path to gene annotation file (.gtf).
      - <b>build</b>: Name of reference genome--output files will use this prefix.
-     - <b>known_sites</b>: Absolute path to lnown variants file (.vcf.gz).
+     - <b>known_sites</b>: Absolute path to known variants file (.vcf.gz).
 
 <h3>Step 3: Create sample sheet</h3>
-Input fastqs and metadata are specified with a sample sheet, also based on
-Array Studio.
+Input fastqs and metadata are specified with a sample sheet. Each entry of the
+sample sheet describes a unique sample ID, paths to corresponding fastq paths,
+and metadata columns describing the experimental setup of the analysis. An 
+example <code>data/sample_sheet.tsv</code> is included with Orpheus for analyses
+run with the test dataset in the same directory. An empty template to write
+in your own data is available at <code>data/template.tsv</code>. Alternatively,
+you may create your own sample sheet in Microsoft Excel as long as the columns
+are labeled exactly as shown below and the file is saved as "Text (Tab
+delimited) (*.txt)"
 
-
+![alt text](img/example_sample_sheet.png)
 
 <h3>Step 4: Execute workflow</h3>
 <h4>Docker</h4>
