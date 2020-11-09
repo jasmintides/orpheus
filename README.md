@@ -61,6 +61,8 @@ The config file takes the following values:
 Input fastqs and metadata are specified with a sample sheet, also based on
 Array Studio.
 
+
+
 <h3>Step 4: Execute workflow</h3>
 <h4>Docker</h4>
 The workflow may also be deployed as a Docker image, where a conda environment
