@@ -22,6 +22,7 @@ rule all_2:
 		## Aggregated gene raw and TPM counts ##
 		"outs/{}/star/raw_counts.tsv".format(config["ID"]),
 		"outs/{}/RSEM/tpm_counts.tsv".format(config["ID"]),
+		## Per sample variant calls ##
 		expand("outs/{ID}/calls/filtered/{sample}.vcf.gz", ID = ID, sample = list_of_samples)
 
 #rule all:
