@@ -13,8 +13,8 @@ This method yields your own Conda environment where Snakemake is run, and
 where all software dependencies are installed and managed.
 
 One caveat is that Conda is not installed system-wide on HPC at the time of 
-writing. Therefore, the easiest way to start working with Orpheus is to use the 
-Docker method described in</b> [Step 3](#step-3-execute-workflow),  which comes 
+writing and requires manual installation. For this reason a Docker version of
+Orpheus is available</b> [Step 3](#step-3-execute-workflow),  which comes 
 installed with Snakemake and associated dependencies.
 
 <h3>Step 1: Get Orpheus</h3>
