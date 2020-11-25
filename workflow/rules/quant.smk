@@ -76,9 +76,11 @@ rule create_raw_counts_table:
 
 ###### RSEM (TPM) ######
 
-checkpoint create_gene_ids_rsem:
+rule create_gene_ids_rsem:
+#checkpoint create_gene_ids_rsem:
 	input:
-		template = "outs/{}/RSEM/{}.genes.results".format(config["ID"], list_of_samples[0])
+		#template = "outs/{}/RSEM/{}.genes.results".format(config["ID"], list_of_samples[0])
+		template = expand("outs/{ID}/RSEM/{sample}.genes.results", ID = config["ID"], sample = list_of_samples[0])
 	params:
 		ID = config["ID"]
 	output:

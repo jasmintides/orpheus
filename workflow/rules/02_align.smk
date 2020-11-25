@@ -19,14 +19,19 @@ rule star_index_new:
 
 def get_trimmed(wildcards):
 	if not is_single_end(wildcards.sample):
-		# paired-end sample
+		### paired-end sample ###
+		#checkpoint_f1 = checkpoints.trimmomatic_pe.get(**wildcards).output.r1
+		#checkpoint_f2 = checkpoints.trimmomatic_pe.get(**wildcards).output.r2
+		#return {'fq1': checkpoint_f1[0],
+		#	'fq2': checkpoint_f2[0]}
 		return {'fq1': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 1, **wildcards),
 			'fq2': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 2, **wildcards)}
 	# single end sample
 	else:
 		return "outs/{ID}/{sample}.fq.gz".format(**wildcards)	
 
-checkpoint star_pe_multi:
+rule star_pe_multi:
+#checkpoint star_pe_multi:
 	input:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
 		unpack(get_trimmed)
@@ -55,7 +60,8 @@ def get_template(wildcards):
 
 rule create_gene_ids_star:
 	input:
-		unpack(get_template)
+#		unpack(get_template)
+		expand("outs/{ID}/star/{sample}/ReadsPerGene.out.tab", ID = config["ID"], sample = list_of_samples[0])
 	params:
 		ID = config["ID"]
 	output:

@@ -46,10 +46,10 @@ rule all_2:
 		
 
 ### include rules ###
+include: 'workflow/rules/qc.smk'
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
 include: 'workflow/rules/02_align.smk'
-include: 'workflow/rules/qc.smk'
 include: "workflow/rules/call.smk"
 include: "workflow/rules/quant.smk"
 
