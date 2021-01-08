@@ -1,22 +1,19 @@
 <h1>Orpheus</h1>
 Orpheus (Omicsoft-inspired RNA-seq pipeline) is a workflow that performs 
 quality control, alignment, expression quantification and variant calling on 
-RNA-seq data based on  [GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-).
-It was written with the Python-based workflow manager
-[Snakemake](https://snakemake.readthedocs.io/en/stable/).
+RNA-seq data. RNA-seq variant calling is based on 
+[GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-). 
+Orpheus was written with the Python-based workflow manager 
+[Snakemake](https://snakemake.readthedocs.io/en/stable/). Snakemake was 
+installed in a Conda environment in the Agios HPC, which users can load as a 
+module on HPC:
+
+```
+module load conda
+conda activate snakemake
+```
 
 <h2>Usage</h2>
-<h3>Step 0: Install Snakemake</h3>
-The recommended way to install Snakemake is with
-[Conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html#installation-via-conda).
-This method yields your own Conda environment where Snakemake is run, and
-where all software dependencies are installed and managed.
-
-One caveat is that Conda is not installed system-wide on HPC at the time of 
-writing and requires manual installation. For this reason a Docker version of
-Orpheus is available</b> [Step 3](#step-3-execute-workflow),  which comes 
-installed with Snakemake and associated dependencies.
-
 <h3>Step 1: Get Orpheus</h3>
 [Clone](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 the repo to your path of choice on HPC or a local machine:
@@ -24,6 +21,10 @@ the repo to your path of choice on HPC or a local machine:
 ```
 git clone https://git.agios.local/Jeff.Alvarez/orpheus.git
 ```
+
+Orpheus is also available as a Docker image, which may be run by following the 
+directions at [Step 4](#step-4-execute workflow).
+
 <h3>Step 2: Configure Orpheus</h3>
 Analysis names and reference data are specified with a config file. The layout 
 is based on the config file used for the 
