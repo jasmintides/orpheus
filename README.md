@@ -26,6 +26,8 @@ structure:
 │   └── config.local.yaml
 │   └── config.docker.yaml
 ├── outs
+├── benchmarks
+├── rules
 ├── data
 ├── .gitignore
 ├── README.md
@@ -47,6 +49,31 @@ which are to be used with local and Docker deployments of the pipeline
 respectively. They are run with a test dataset included in the repo, 
 located in the <code>data</code> directory. Configuration files are further
 described in [Step 2](#step-2-configure-orpheus).
+
+The central <code>Snakefile</code> marks the entrypoint of the pipeline by 
+specifying a central rule for the expected output of the entire pipeline:
+
+* Raw gene expression counts aggregated from STAR
+* TPM gene expression counts aggregated from RSEM
+* A MultiQC report aggregating FASTQC and STAR logs from all samples
+</li>
+
+To do this, the <code>Snakefile</code> parses user-defined info from the config 
+file and include the appropriate modules from the <code>workflow</code> 
+directory to generate the expected output defined in the 
+<code>Snakefile</code>.
+
+All output files generated in the workflow are stored in the <code>outs</code> 
+directory, which contains subdirectories named after the analysis ID name 
+specified in the config file of a given analysis. From the directory root, the 
+raw counts, TPM counts, and MultiQC report are found in
+<code>outs/{analysis_ID}/star/raw_counts.tsv</code>, 
+<code>outs/{analysis_ID}/RSEM/tpm_counts.tsv</code>, and
+<code>outs/{analysis_ID}/qc/multiqc_report.{analysis_ID}.html</code> 
+respectively. Benchmarking data, which summarizes running time and memory 
+usage, and system logs for each rule in the pipeline are also stored in a 
+similar manner in <code>benchmarks</code> and <code>logs</code> 
+respectively.
 
 <h2>Usage</h2>
 <h3>Step 1: Get Orpheus</h3>
