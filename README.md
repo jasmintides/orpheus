@@ -13,6 +13,41 @@ module load conda
 conda activate snakemake
 ```
 
+<h2>Overview</h2>
+The git repository for Orpheus is laid out in the following
+structure:
+
+```
+├── Snakefile
+├── workflow
+│   ├── rules
+│   └── envs
+├── config
+│   └── config.local.yaml
+│   └── config.docker.yaml
+├── outs
+├── data
+├── .gitignore
+├── README.md
+└── LICENSE.md
+```
+
+The pipeline code for Orpheus is stored in the <code>workflow</code> directory. 
+<code>workflow</code> contains subdirectories for <code>rules</code> written 
+for each module of the pipeline: trimming, QC, alignment, quantification, and 
+an optional step  for variant calling. Although most rules are run with 
+Snakemake wrapper scripts, Conda environments for individual rules are stored 
+in <code>envs</code>.
+
+The <code>config</code> directory contains configuration forms with which 
+users define analysis metadata and paths to reference data to be used in the 
+Orpheus pipeline. There exists configuration files 
+<code>config/config.local.yaml</code> and <code>config/config.local.yaml</code>,
+which are to be used with local and Docker deployments of the pipeline 
+respectively. They are run with a test dataset included in the repo, 
+located in the <code>data</code> directory. Configuration files are further
+described in [Step 2](#step-2-configure-orpheus).
+
 <h2>Usage</h2>
 <h3>Step 1: Get Orpheus</h3>
 [Clone](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
