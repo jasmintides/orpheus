@@ -1,6 +1,6 @@
 import pandas as pd
 
-configfile: "workflow/config/config.test.yaml"
+configfile: "config/config.test.yaml"
 
 samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
 list_of_samples = samples["sample"].tolist()
