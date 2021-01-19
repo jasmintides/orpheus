@@ -4,13 +4,17 @@ quality control, alignment, expression quantification and variant calling on
 RNA-seq data. RNA-seq variant calling is based on 
 [GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-). 
 Orpheus was written with the Python-based workflow manager 
-[Snakemake](https://snakemake.readthedocs.io/en/stable/). Snakemake was 
-installed in a Conda environment in the Agios HPC, which users can load as a 
-module on HPC:
+[Snakemake](https://snakemake.readthedocs.io/en/stable/), which is installed in 
+a Conda environment in the Agios HPC. Users may test that the pipeline is 
+working properly with the test data included in the repo:
 
 ```
 module load conda
 conda activate snakemake
+
+git clone https://git.agios.local/Jeff.Alvarez/orpheus.git
+cd /path/to/orpheus
+snakemake --use-conda --cores 8
 ```
 
 <h2>Overview</h2>
