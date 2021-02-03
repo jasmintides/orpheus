@@ -8,3 +8,9 @@ logs/*
 workflow/rules/.nfs*
 benchmarks/*
 workflow/rules/*.swp
+resources
+snpEff*
+config/config20210129_ADAR.yaml
+data/samples/unt_*.fastq
+data/samples/untreated_*.fastq.gz
+workflow/scripts/calculate_dynamic_range.R

@@ -31,7 +31,6 @@ def get_trimmed(wildcards):
 		return "outs/{ID}/{sample}.fq.gz".format(**wildcards)	
 
 rule star_pe_multi:
-#checkpoint star_pe_multi:
 	input:
 		directory("outs/{}/{}".format(config["ID"], config["ref"]["build"])),
 		unpack(get_trimmed)
@@ -46,7 +45,7 @@ rule star_pe_multi:
 	output:
 		temp("outs/{ID}/star/{sample}/ReadsPerGene.out.tab"),
 		temp("outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"),
-		temp("outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam"),
+		"outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
 		log = temp("outs/{ID}/star/{sample}/Log.final.out")
 	threads:
 		8
@@ -55,12 +54,10 @@ rule star_pe_multi:
 
 def get_template(wildcards):
 	checkpoint_output = checkpoints.star_pe_multi.get(ID = wildcards.ID, sample = list_of_samples[0]).output[0]
-	#template = checkpoint_output[0]
 	return {'template': checkpoint_output[0]}
 
 rule create_gene_ids_star:
 	input:
-#		unpack(get_template)
 		expand("outs/{ID}/star/{sample}/ReadsPerGene.out.tab", ID = config["ID"], sample = list_of_samples[0])
 	params:
 		ID = config["ID"]
