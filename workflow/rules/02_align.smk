@@ -20,15 +20,11 @@ rule star_index_new:
 def get_trimmed(wildcards):
 	if not is_single_end(wildcards.sample):
 		### paired-end sample ###
-		#checkpoint_f1 = checkpoints.trimmomatic_pe.get(**wildcards).output.r1
-		#checkpoint_f2 = checkpoints.trimmomatic_pe.get(**wildcards).output.r2
-		#return {'fq1': checkpoint_f1[0],
-		#	'fq2': checkpoint_f2[0]}
 		return {'fq1': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 1, **wildcards),
 			'fq2': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 2, **wildcards)}
 	# single end sample
 	else:
-		return "outs/{ID}/{sample}.fq.gz".format(**wildcards)	
+		return {'fq1': "outs/{ID}/trimmed/{sample}.fq.gz".format(**wildcards)}
 
 rule star_pe_multi:
 	input:
@@ -53,7 +49,7 @@ rule star_pe_multi:
 		"0.59.1/bio/star/align"
 
 def get_template(wildcards):
-	checkpoint_output = checkpoints.star_pe_multi.get(ID = wildcards.ID, sample = list_of_samples[0]).output[0]
+	checkpoint_output = checkpoints.star_pe_multi.get(ID = wildcards.ID, sample = list_of_samples[1]).output[0]
 	return {'template': checkpoint_output[0]}
 
 rule create_gene_ids_star:

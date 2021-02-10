@@ -18,29 +18,36 @@ rule rsem_prepare_reference:
 		"rsem-prepare-reference --num-threads {threads} --gtf {input.gtf} "
 		"{input.fasta} outs/{params.ID}/ref/{params.build}"
 
-rule rsem_calculate_expression:
+rule rsem_calculate_expression_pe:
 	input:
-		ref = directory("outs/{}/ref".format(config["ID"])),
-		bam = "outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam"
+		bam = "outs/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",	
+		ref = directory("outs/{}/ref".format(config["ID"]))
 	params:
+		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
 		ID = config["ID"],
 		build = config["ref"]["build"]
 	output:
 		"outs/{ID}/RSEM/{sample}.isoforms.results",
 		"outs/{ID}/RSEM/{sample}.genes.results"
 	benchmark:
-		"benchmarks/{ID}/quant/01_rsem.{sample}.txt"
+		"benchmarks/{ID}/quant/34_rsem.{sample}.txt"
 	log:
 		"logs/{ID}/rsem/01_rsem.{sample}.log"
 	threads:
-		4
+		5
 	conda:
 		"../envs/quant.yaml"
 	shell:
+		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"rsem-calculate-expression --num-threads {threads} "
 		"--fragment-length-max 1000 --no-bam-output --paired-end "
 		"--bam {input.bam} {input.ref}/{params.build} "
-		"outs/{ID}/RSEM/{wildcards.sample}"
+		"outs/{ID}/RSEM/{wildcards.sample} ; "
+		"elif [[ $is_single_end == True ]]; then "
+		"rsem-calculate-expression --num-threads {threads} "
+		"--fragment-length-max 1000 --no-bam-output "
+		"--bam {input.bam} {input.ref}/{params.build} "
+		"outs/{ID}/RSEM/{wildcards.sample} ; fi"
 
 rule create_raw_counts_star:
 	input:
@@ -74,7 +81,6 @@ rule create_gene_ids_rsem:
 	shell:
 		"tail -n +2 {input.template} | cut -f1 | sed '1i \n' > "
 		"{output}"
-#		"outs/{params.ID}/RSEM/gene_ids.txt"
 
 rule create_tpm_counts:
 	input:

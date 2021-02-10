@@ -7,13 +7,6 @@ def get_fq1(wildcards):
 def get_fq2(wildcards):
         return {'r2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
 
-def get_trimmed(wildcards):
-	if not is_single_end(wildcards.sample):
-		return {'fq1': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 1, **wildcards),
-			'fq2': expand("outs/{ID}/trimmed/{sample}_{group}.fq.gz", group = 2, **wildcards)}
-	else:
-		return "outs/{ID}/{sample}.fq.gz".format(**wildcards)
-
 rule merge_paired_reads:
 	input:
 		unpack(get_fq1),
@@ -25,6 +18,7 @@ rule merge_paired_reads:
 	log:
 		"logs/{ID}/sortmerna/{sample}.log"
 	shell:
+#		"if [[ {input.r1} =~ \.gz ]] ; then gunzip -cd {input.r1} > 
 		"bash merge-paired-reads.sh {input.r1} {input.r2} outs/{ID}/sortmerna/{wildcards.sample}.fastq"
 
 rule sortmerna:
