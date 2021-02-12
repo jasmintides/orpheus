@@ -15,3 +15,4 @@ data/samples/unt_*.fastq
 data/samples/untreated_*.fastq.gz
 workflow/scripts/calculate_dynamic_range.R
 data/sample_sheet_3.tsv
+config/config.rRNA_test.yaml

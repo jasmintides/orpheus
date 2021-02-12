@@ -8,3 +8,4 @@ ref:
         gtf: data/Human_B37.3_chr1.gtf
         build: Human_B37.3
         known_sites: data/dbsnp_138.b37.chr_1.vcf.gz
+outpath: "outs"

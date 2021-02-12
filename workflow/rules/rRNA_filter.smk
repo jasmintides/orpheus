@@ -1,36 +1,63 @@
-def get_fastq(wildcards):
-        return samples.loc[(wildcards.sample), ["fq1", "fq2"]].dropna()
-
-def get_fq1(wildcards):
-        return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
-
-def get_fq2(wildcards):
-        return {'r2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
+rule unzip_paired_reads:
+	input:
+		unpack(get_fastq)
+	output:
+		r1 = temp("{outpath}/{ID}/sortmerna/paired/{sample}_1.fastq"),
+		r2 = temp("{outpath}/{ID}/sortmerna/paired/{sample}_2.fastq")
+	run:
+		if input.r1.endswith(".gz") and is_paired_end(wildcards.sample):
+			shell("gunzip -cd {input.r1} > {output.r1}")
+		if input.r2.endswith(".gz") and is_paired_end(wildcards.sample):
+			shell("gunzip -cd {input.r2} > {output.r2}")
 
 rule merge_paired_reads:
 	input:
-		unpack(get_fq1),
-		unpack(get_fq2)
+		r1 = "{outpath}/{ID}/sortmerna/paired/{sample}_1.fastq",
+		r2 = "{outpath}/{ID}/sortmerna/paired/{sample}_2.fastq"
 	output:
-		"outs/{ID}/sortmerna/{sample}.fastq"
+		merged = "{outpath}/{ID}/sortmerna/merged/{sample}.fastq"
 	conda:
 		"../envs/sortmerna.yaml"
-	log:
-		"logs/{ID}/sortmerna/{sample}.log"
 	shell:
-#		"if [[ {input.r1} =~ \.gz ]] ; then gunzip -cd {input.r1} > 
-		"bash merge-paired-reads.sh {input.r1} {input.r2} outs/{ID}/sortmerna/{wildcards.sample}.fastq"
+		"bash merge-paired-reads.sh {input.r1} {input.r2} {output.merged}"
+	
+rule unzip_reads:
+	input:
+		unpack(get_fastq)
+	output:
+		merged = "{outpath}/{ID}/sortmerna/single_end/{sample}.fastq"
+	run:
+		if input.r1.endswith(".gz") and not is_paired_end(wildcards.sample):
+			shell("gunzip -cd {input.r1} > {output.merged}")
+
+def get_merged_reads(wildcards):
+	if not is_single_end(wildcards.sample):
+		# paired-end
+		return{'fastq': expand("{outpath}/{ID}/sortmerna/merged/{sample}.fastq", **wildcards)}
+	else:
+		# single-end
+		return{'fastq': expand("{outpath}/{ID}/sortmerna/single_end/{sample}.fastq", **wildcards)}
 
 rule sortmerna:
 	input:
-		fastq = "outs/{ID}/sortmerna/{sample}.fastq"
+		unpack(get_merged_reads)
 	params:
-		workdir = "/data/exploratory/Users/jeff.alvarez/orpheus"
+		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
+		rRNA_db_path = "/data/exploratory/genome/sortmerna"
 	output:
-		clean = "outs/{ID}/sortmerna/{sample}.clean.fastq"
+		log = "{outpath}/{ID}/sortmerna/{sample}.rRNA.log",
+		clean_fq = temp("{outpath}/{ID}/sortmerna/{sample}.clean.fastq"),
+		rRNA_fq = temp("{outpath}/{ID}/sortmerna/{sample}.rRNA.fastq")
 	conda:
 		"../envs/sortmerna.yaml"
 	shell:
-		"sortmerna --ref resources/silva-arc-16s-id95.fasta,resources/silva-arc-16s-db "
-		"--reads {input.fastq} --aligned outs/{ID}/sortmerna/{wildcards.sample}.rRNA "
-		"--paired_in --fastx --other outs/{ID}/sortmerna/{wildcards.sample}.clean --log -v" 
+		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
+		"sortmerna --ref {params.rRNA_db_path}/silva-arc-16s-id95.fasta,"
+		"{params.rRNA_db_path}/silva-arc-16s-db --reads {input.fastq} "
+		"--aligned {wildcards.outpath}/{wildcards.ID}/sortmerna/{wildcards.sample}.rRNA "
+		"--fastx --paired_in --other {outpath}/{ID}/sortmerna/{wildcards.sample}.clean "
+		"--log -v ; elif [[ $is_single_end == True ]]; then "
+		"sortmerna --ref {params.rRNA_db_path}/silva-arc-16s-id95.fasta,"
+		"{params.rRNA_db_path}/silva-arc-16s-db --reads {input.fastq} "
+		"--aligned {wildcards.outpath}/{wildcards.ID}/sortmerna/{wildcards.sample}.rRNA --fastx "
+		"--other {wildcards.outpath}/{wildcards.ID}/sortmerna/{wildcards.sample}.clean --log -v ; fi"

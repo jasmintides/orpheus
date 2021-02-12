@@ -1,12 +1,12 @@
 rule replace_rg:
 	input:
-		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"
+		"{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"
 	output:
-		temp("outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.rgAligned.bam")
+		temp("{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.rgAligned.bam")
 	benchmark:
-		"benchmarks/{ID}/call/00_replace_rg.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/00_replace_rg.{sample}.txt"
 	log:
-		"logs/{ID}/picard/replace_rg/{sample}.log"
+		"{outpath}/{ID}/logs/picard/replace_rg/{sample}.log"
 	params:
 		"RGID={sample} RGLB={sample} RGPL={sample} RGPU={sample} RGSM={sample} "
 		"VALIDATION_STRINGENCY=LENIENT"
@@ -15,14 +15,14 @@ rule replace_rg:
 
 rule mark_duplicates:
 	input:
-		"outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.rgAligned.bam"
+		"{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.rgAligned.bam"
 	output:
-		bam = "outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.markedAligned.bam",
-		metrics = "outs/{ID}/star/{sample}/metrics.txt"
+		bam = "{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.markedAligned.bam",
+		metrics = "{outpath}/{ID}/star/{sample}/metrics.txt"
 	benchmark:
-		"benchmarks/{ID}/call/01_mark_duplicates.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/01_mark_duplicates.{sample}.txt"
 	log:
-		"logs/{ID}/picard/dedup/{sample}.log"
+		"{outpath}/{ID}/logs/picard/dedup/{sample}.log"
 	params:
 		mem = "-Xmx8g"
 	wrapper:
@@ -30,47 +30,47 @@ rule mark_duplicates:
 
 rule split_n_cigar_reads:
 	input:
-		bam = "outs/{ID}/star/{sample}/Aligned.sortedByCoord.out.markedAligned.bam",
+		bam = "{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.markedAligned.bam",
 		ref = config['ref']['fa']
 	output:
-		temp("outs/{ID}/split/{sample}.bam")
+		temp("{outpath}/{ID}/split/{sample}.bam")
 	benchmark:
-		"benchmarks/{ID}/call/02_split_n_cigar_reads.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/02_split_n_cigar_reads.{sample}.txt"
 	log:
-		"logs/{ID}/gatk/splitNCIGARreads/{sample}.log"
+		"{outpath}/{ID}/logs/gatk/splitNCIGARreads/{sample}.log"
 	params:
-		extra = "--tmp-dir outs/{ID}/star/{sample}",
+		extra = "--tmp-dir {outpath}/{ID}/star/{sample}",
 		java_opts = "-Xmx4g"
 	wrapper:
 		"0.57.0/bio/gatk/splitncigarreads"
 
 rule gatk_bqsr:
 	input:
-		bam = "outs/{ID}/split/{sample}.bam",
+		bam = "{outpath}/{ID}/split/{sample}.bam",
 		ref = config['ref']['fa'],
 		known = config["ref"]["known_sites"]
 	output:
-		bam = temp("outs/{ID}/recal/{sample}.bam")
+		bam = temp("{outpath}/{ID}/recal/{sample}.bam")
 	benchmark:
-		"benchmarks/{ID}/call/03_gatk_bqsr.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/03_gatk_bqsr.{sample}.txt"
 	log:
-		"logs/{ID}/gatk/bqsr/{sample}.log"
+		"{outpath}/{ID}/logs/gatk/bqsr/{sample}.log"
 	params:
-		extra = "-DF NotDuplicateReadFilter --tmp-dir outs/{ID}/split",
+		extra = "-DF NotDuplicateReadFilter --tmp-dir {outpath}/{ID}/split",
 		java_opts = "-Xmx4g"
 	wrapper:
 		"0.57.0/bio/gatk/baserecalibrator"
 
 rule haplotype_caller:
 	input:
-		bam = "outs/{ID}/recal/{sample}.bam",
+		bam = "{outpath}/{ID}/recal/{sample}.bam",
 		ref = config['ref']['fa']
 	output:
-		gvcf = temp("outs/{ID}/calls/{sample}.{chr_chunks}.g.vcf.gz")
+		gvcf = temp("{outpath}/{ID}/calls/{sample}.{chr_chunks}.g.vcf.gz")
 	benchmark:
-		"benchmarks/{ID}/call/04_haplotype_caller.{sample}.{chr_chunks}.txt"
+		"{outpath}/{ID}/benchmarks/call/04_haplotype_caller.{sample}.{chr_chunks}.txt"
 	log:
-		"logs/{ID}/gatk/haplotypecaller/{sample}.{chr_chunks}.log"
+		"{outpath}/{ID}/logs/gatk/haplotypecaller/{sample}.{chr_chunks}.log"
 	threads:
 		4
 	params:
@@ -86,15 +86,15 @@ rule haplotype_caller:
 
 rule combine_gvcfs:
 	input:
-		gvcfs = expand("outs/{ID}/calls/{{sample}}.{chr_chunks}.g.vcf.gz",
-				ID = ID, chr_chunks = chr_chunks),
+		gvcfs = expand("{outpath}/{ID}/calls/{{sample}}.{chr_chunks}.g.vcf.gz",
+				outpath = outpath, ID = ID, chr_chunks = chr_chunks),
 		ref = config['ref']['fa']
 	output:
-		gvcf = temp("outs/{ID}/combined/{sample}.g.vcf.gz")
+		gvcf = temp("{outpath}/{ID}/combined/{sample}.g.vcf.gz")
 	benchmark:
-		"benchmarks/{ID}/call/05_combine_gvcfs.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/05_combine_gvcfs.{sample}.txt"
 	log:
-		"logs/{ID}/gatk/combine_gvcfs/{sample}.log"
+		"{outpath}/{ID}/logs/gatk/combine_gvcfs/{sample}.log"
 	params:
 		extra = "",
 		java_opts = ""
@@ -103,14 +103,14 @@ rule combine_gvcfs:
 
 rule genotype_gvcfs:
 	input:
-		gvcf = "outs/{ID}/combined/{sample}.g.vcf.gz",
+		gvcf = "{outpath}/{ID}/combined/{sample}.g.vcf.gz",
 		ref = config['ref']['fa']
 	output:
-		vcf = temp("outs/{ID}/calls/unfiltered/{sample}.unfiltered.vcf.gz")
+		vcf = temp("{outpath}/{ID}/calls/unfiltered/{sample}.unfiltered.vcf.gz")
 	benchmark:
-		"benchmarks/{ID}/call/06_genotype_gvcfs.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/06_genotype_gvcfs.{sample}.txt"
 	log:
-		"logs/{ID}/gatk/genotypegvcfs.{sample}.log"
+		"{outpath}/{ID}/logs/gatk/genotypegvcfs.{sample}.log"
 	params:
 		extra = "-stand-call-conf 0.0",
 		java_opts = "",
@@ -119,14 +119,14 @@ rule genotype_gvcfs:
 
 rule gatk_filter:
 	input:
-		vcf = "outs/{ID}/calls/unfiltered/{sample}.unfiltered.vcf.gz",
+		vcf = "{outpath}/{ID}/calls/unfiltered/{sample}.unfiltered.vcf.gz",
 		ref = config["ref"]["fa"]
 	output:
-		vcf = temp("outs/{ID}/calls/filtered/{sample}.vcf.gz")
+		vcf = temp("{outpath}/{ID}/calls/filtered/{sample}.vcf.gz")
 	benchmark:
-		"benchmarks/{ID}/call/07_gatk_filter.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/07_gatk_filter.{sample}.txt"
 	log:
-		"logs/{ID}/gatk/filter/snvs.{sample}.log"
+		"{outpath}/{ID}/logs/gatk/filter/snvs.{sample}.log"
 	params:
 		filters = {"FS": "FS > 30.0", "QD": "QD < 2.0", "DP": "DP < 20"},
 		extra = "-window 35 -cluster 3",
@@ -136,13 +136,13 @@ rule gatk_filter:
 
 rule snpeff:
 	input:
-		calls = "outs/{ID}/calls/filtered/{sample}.vcf.gz"
+		calls = "{outpath}/{ID}/calls/filtered/{sample}.vcf.gz"
 	output:
-		calls = temp("outs/{ID}/annotated/{sample}.vcf")
+		calls = temp("{outpath}/{ID}/annotated/{sample}.vcf")
 	benchmark:
-		"benchmarks/{ID}/call/08_snpeff.{sample}.txt"
+		"{outpath}/{ID}/benchmarks/call/08_snpeff.{sample}.txt"
 	log:
-		"logs/{ID}/snpeff/{sample}.log"
+		"{outpath}/{ID}/logs/snpeff/{sample}.log"
 	params:
 		extra = "-Xmx4g -no-downstream -no-intergenic -no-intron -no-upstream",
 		reference = "GRCh37.75"
@@ -154,15 +154,15 @@ rule snpeff:
 
 rule bcftools_annotate:
         input:
-                calls = "outs/{ID}/annotated/{sample}.vcf",
+                calls = "{outpath}/{ID}/annotated/{sample}.vcf",
                 bed = "/data/exploratory/Users/jeff.alvarez/pipeline_ins/Alu.RepeatMasker.hg19.ID.bed",
                 header = "/data/exploratory/Users/jeff.alvarez/pipeline_ins/Alu.RepeatMasker.hg19.ID.txt"
         output:
-                vcf = "outs/{ID}/final/{sample}.vcf.gz"
+                vcf = "{outpath}/{ID}/final/{sample}.vcf.gz"
         benchmark:
-                "benchmarks/{ID}/call/{sample}.09_bcftools_annotate.txt"
+                "{outpath}/{ID}/benchmarks/call/{sample}.09_bcftools_annotate.txt"
         log:
-                "logs/{ID}/09_bcftools_annotate/{sample}.log"
+                "{outpath}/{ID}/logs/09_bcftools_annotate/{sample}.log"
         params:
                 columns = "CHROM,FROM,TO,ALU_NAME,ALU_ID,STRAND"
         conda:
