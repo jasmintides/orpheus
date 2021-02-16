@@ -63,7 +63,7 @@ rule create_raw_counts_table:
 	shell:
 		"paste {wildcards.outpath}/{wildcards.ID}/star/gene_ids.txt {input.ind_counts} > {output.counts}"
 
-###### RSEM (TPM - gene) ######
+###### RSEM (expected counts, TPM - gene) ######
 
 rule create_gene_ids_rsem:
 	input:
@@ -75,29 +75,49 @@ rule create_gene_ids_rsem:
 		"tail -n +2 {input.template} | cut -f1 | sed '1i \n' > "
 		"{output}"
 
-rule create_tpm_counts:
+rule create_gene_expected_counts:
 	input:
 		ind_counts = "{outpath}/{ID}/RSEM/{sample}.genes.results"
 	output:
-		temp("{outpath}/{ID}/RSEM/{sample}.genes.counts")
+		temp("{outpath}/{ID}/RSEM/{sample}.genes.expected.counts")
+	shell:
+		"tail -n +2 {input.ind_counts} | cut -f5 | sed '1i {wildcards.sample}' > "
+		"{output}"
+
+rule create_gene_tpm_counts:
+	input:
+		ind_counts = "{outpath}/{ID}/RSEM/{sample}.genes.results"
+	output:
+		temp("{outpath}/{ID}/RSEM/{sample}.genes.tpm.counts")
 	shell:
 		"tail -n +2 {input.ind_counts} | cut -f6 | sed '1i {wildcards.sample}' > "
 		"{output}"
 
-rule aggregate_tpm_counts_table:
+rule aggregate_gene_expected_counts:
 	input:
 		gene_ids = "{}/{}/RSEM/gene_ids.txt".format(outpath, ID),
-		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.genes.counts', 
+		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.genes.expected.counts', 
 				outpath = outpath, ID = ID, sample = list_of_samples)
 	output:
-		counts = "{outpath}/{ID}/RSEM/tpm_counts.tsv"
+		counts = "{outpath}/{ID}/RSEM/genes.expected_counts.tsv"
+	shell:
+		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/gene_ids.txt "
+		"{input.ind_counts} > {output.counts}"
+
+rule aggregate_gene_tpm_counts:
+	input:
+		gene_ids = "{}/{}/RSEM/gene_ids.txt".format(outpath, ID),
+		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.genes.tpm.counts', 
+				outpath = outpath, ID = ID, sample = list_of_samples)
+	output:
+		counts = "{outpath}/{ID}/RSEM/genes.tpm_counts.tsv"
 	shell:
 		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/gene_ids.txt "
 		"{input.ind_counts} > {output.counts}"
 
 ### RSEM (TPM - transcript) ###
 
-rule create_isoforms_ids_rsem:
+rule create_isoform_ids_rsem:
 	input:
 		template = expand("{outpath}/{ID}/RSEM/{sample}.isoforms.results", 
 				outpath = outpath, ID = ID, sample = list_of_samples[0])
@@ -107,22 +127,42 @@ rule create_isoforms_ids_rsem:
 		"tail -n +2 {input.template} | cut -f1 | sed '1i \n' > "
 		"{output}"
 
-rule create_tpm_isoforms_counts:
+rule create_isoform_expected_counts:
 	input:
 		ind_counts = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
 	output:
-		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.counts")
+		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.expected.counts")
+	shell:
+		"tail -n +2 {input.ind_counts} | cut -f5 | sed '1i {wildcards.sample}' > "
+		"{output}"
+
+rule create_isoform_tpm_counts:
+	input:
+		ind_counts = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
+	output:
+		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.tpm.counts")
 	shell:
 		"tail -n +2 {input.ind_counts} | cut -f6 | sed '1i {wildcards.sample}' > "
 		"{output}"
 
-rule aggregate_tpm_isoforms_counts:
+rule aggregate_isoform_expected_counts:
 	input:
 		gene_ids = "{}/{}/RSEM/isoforms_ids.txt".format(outpath, ID),
-		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.isoforms.counts', 
+		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.isoforms.expected.counts', 
 				outpath = outpath, ID = ID, sample = list_of_samples)
 	output:
-		counts = "{outpath}/{ID}/RSEM/tpm_isoforms_counts.tsv"
+		counts = "{outpath}/{ID}/RSEM/isoforms.expected_counts.tsv"
+	shell:
+		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/isoforms_ids.txt "
+		"{input.ind_counts} > {output.counts}"
+
+rule aggregate_isoform_tpm_counts:
+	input:
+		gene_ids = "{}/{}/RSEM/isoforms_ids.txt".format(outpath, ID),
+		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.isoforms.tpm.counts', 
+				outpath = outpath, ID = ID, sample = list_of_samples)
+	output:
+		counts = "{outpath}/{ID}/RSEM/isoforms.tpm_counts.tsv"
 	shell:
 		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/isoforms_ids.txt "
 		"{input.ind_counts} > {output.counts}"

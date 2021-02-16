@@ -23,8 +23,10 @@ rule all:
 		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID),
 		## Aggregated gene raw and TPM counts ##
 		"{}/{}/star/raw_counts.tsv".format(outpath, ID),
-		"{}/{}/RSEM/tpm_counts.tsv".format(outpath, ID),
-		"{}/{}/RSEM/tpm_isoforms_counts.tsv".format(outpath, ID)
+		"{}/{}/RSEM/genes.expected_counts.tsv".format(outpath, ID),
+		"{}/{}/RSEM/genes.tpm_counts.tsv".format(outpath, ID),
+		"{}/{}/RSEM/isoforms.expected_counts.tsv".format(outpath, ID),
+		"{}/{}/RSEM/isoforms.tpm_counts.tsv".format(outpath, ID)
 
 rule quant_call_variants:
 	input:
