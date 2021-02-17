@@ -48,7 +48,7 @@ in <code>envs</code>.
 The <code>config</code> directory contains configuration forms with which 
 users define analysis metadata and paths to reference data to be used in the 
 Orpheus pipeline. There exists configuration files 
-<code>config/config.local.yaml</code> and <code>config/config.local.yaml</code>,
+<code>config/config.local.yaml</code> and <code>config/config.docker.yaml</code>,
 which are to be used with local and Docker deployments of the pipeline 
 respectively. They are run with a test dataset included in the repo, 
 located in the <code>data</code> directory. Configuration files are further
