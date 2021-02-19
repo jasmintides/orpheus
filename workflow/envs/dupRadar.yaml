@@ -2,7 +2,5 @@ channels:
     - conda-forge
     - bioconda
     - defaults
-    - r
 dependencies:
-    - r ==4.0.3
     - bioconductor-dupradar ==1.20.0

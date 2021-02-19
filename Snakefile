@@ -7,6 +7,7 @@ list_of_samples = samples["sample"].tolist()
 ID = config['ID']
 outpath = config['outpath']
 template_sample = list_of_samples[0]
+build = config["ref"]["build"]
 
 chr_dict = {"chunk_01": "-L chr1", "chunk_02": "-L chr2", "chunk_03": "-L chr3",
 	"chunk_04": "-L chr4", "chunk_05": "-L chr5", "chunk_06": "-L chr6",
@@ -42,9 +43,8 @@ rule quant_call_variants:
 
 rule all_2:
 	input:
-		expand("{outpath}/{ID}/sortmerna/{sample}.clean.fastq",
+		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
 			outpath = outpath, ID = ID, sample = list_of_samples)
-
 
 ### include rules ###
 include: "workflow/rules/00_common.smk"
@@ -54,3 +54,4 @@ include: "workflow/rules/call.smk"
 include: "workflow/rules/quant.smk"
 include: "workflow/rules/rRNA_filter.smk"
 include: 'workflow/rules/qc.smk'
+include: 'workflow/rules/calc_dynamic_range.smk'

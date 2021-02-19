@@ -40,7 +40,7 @@ rule star_pe_multi:
 			"--quantMode TranscriptomeSAM GeneCounts"
 	output:
 		temp("{outpath}/{ID}/star/{sample}/ReadsPerGene.out.tab"),
-		temp("{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam"),
+		"{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam",
 		"{outpath}/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
 		log = temp("{outpath}/{ID}/star/{sample}/Log.final.out")
 	threads:
