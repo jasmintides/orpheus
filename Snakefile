@@ -46,6 +46,10 @@ rule all_2:
 		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
 			outpath = outpath, ID = ID, sample = list_of_samples)
 
+rule multiqc_only:
+	input:
+		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID),
+
 ### include rules ###
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"

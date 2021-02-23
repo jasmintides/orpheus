@@ -1,0 +1,6 @@
+channels:
+    - conda-forge
+    - bioconda
+    - defaults
+dependencies:
+    - bioconductor-summarizedexperiment ==1.20.0-0

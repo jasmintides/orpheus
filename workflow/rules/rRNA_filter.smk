@@ -7,8 +7,12 @@ rule unzip_paired_reads:
 	run:
 		if input.r1.endswith(".gz") and is_paired_end(wildcards.sample):
 			shell("gunzip -cd {input.r1} > {output.r1}")
+		else:
+			shell("ln -sr {input.r1} {output.r1}")
 		if input.r2.endswith(".gz") and is_paired_end(wildcards.sample):
 			shell("gunzip -cd {input.r2} > {output.r2}")
+		else:
+			shell("ln -sr {input.r2} {output.r2}")
 
 rule merge_paired_reads:
 	input:
@@ -29,6 +33,8 @@ rule unzip_reads:
 	run:
 		if input.r1.endswith(".gz") and not is_paired_end(wildcards.sample):
 			shell("gunzip -cd {input.r1} > {output.merged}")
+		else:
+			shell("ln -sr {input.r1} {output.merged}")
 
 def get_merged_reads(wildcards):
 	if not is_single_end(wildcards.sample):
