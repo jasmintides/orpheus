@@ -1,11 +1,9 @@
 ID: 20XX_11_11_test
-Title: "20XX-11-11 Test"
-HPC_ID: jane.doe
-Contact_name: "Jane Doe"
-samples: data/sample_sheet.tsv
+samples: resources/sample_sheet.tsv
+organism: "Human"
 ref:
-        fa: data/Human_B37.3_chr1.fasta
-        gtf: data/Human_B37.3_chr1.gtf
+        fa: resources/hg19.chr1.fasta
+        gtf: resources/gencode.v19.annotation.chr1.gtf
         build: Human_B37.3
-        known_sites: data/dbsnp_138.b37.chr_1.vcf.gz
+        known_sites: resources/dbsnp_138.b37.chr_1.vcf.gz
 outpath: "outs"
