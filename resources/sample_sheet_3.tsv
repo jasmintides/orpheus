@@ -1,0 +1,5 @@
+sample	fq1	fq2	metadata1
+SRR1039508	resources/samples/untreated_1.fq.gz	resources/samples/untreated_2.fq.gz	untreated
+SRR1039509	resources/samples/alb_1.fq.gz		albut
+SRR1039510	resources/samples/dex_1.fq	resources/samples/dex_2.fq	dex
+SRR1039511	resources/samples/alb_dex_1.fq		albut_dex

@@ -8,7 +8,6 @@ logs/*
 workflow/rules/.nfs*
 benchmarks/*
 workflow/rules/*.swp
-resources
 snpEff*
 config/config.*ADAR.yaml
 data/samples/unt_*.fastq

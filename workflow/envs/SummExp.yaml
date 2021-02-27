@@ -1,0 +1,9 @@
+channels:
+    - conda-forge
+    - bioconda
+    - defaults
+dependencies:
+    - r-essentials ==3.6.0
+    - r-tidyverse ==1.3.0
+    - bioconductor-biomart ==2.42.0-0
+    - bioconductor-summarizedexperiment ==1.16.0-0

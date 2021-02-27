@@ -24,10 +24,12 @@ rule all:
 		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID),
 		## Aggregated gene raw and TPM counts ##
 		"{}/{}/star/raw_counts.tsv".format(outpath, ID),
-		"{}/{}/RSEM/genes.expected_counts.tsv".format(outpath, ID),
-		"{}/{}/RSEM/genes.tpm_counts.tsv".format(outpath, ID),
-		"{}/{}/RSEM/isoforms.expected_counts.tsv".format(outpath, ID),
-		"{}/{}/RSEM/isoforms.tpm_counts.tsv".format(outpath, ID)
+		"{}/{}/SummExp/{}.genes_SummExp.Rds".format(outpath, ID, ID),
+		"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID)
+#		"{}/{}/RSEM/genes.expected_counts.tsv".format(outpath, ID),
+#		"{}/{}/RSEM/genes.tpm_counts.tsv".format(outpath, ID),
+#		"{}/{}/RSEM/isoforms.expected_counts.tsv".format(outpath, ID),
+#		"{}/{}/RSEM/isoforms.tpm_counts.tsv".format(outpath, ID)
 
 rule quant_call_variants:
 	input:
@@ -59,3 +61,4 @@ include: "workflow/rules/quant.smk"
 include: "workflow/rules/rRNA_filter.smk"
 include: 'workflow/rules/qc.smk'
 include: 'workflow/rules/calc_dynamic_range.smk'
+include: 'workflow/rules/write_se.smk'
