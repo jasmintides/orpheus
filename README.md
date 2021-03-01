@@ -8,6 +8,7 @@ Orpheus was written with the Python-based workflow manager
 a Conda environment in the Agios HPC. Users may test that the pipeline is 
 working properly with the test data included in the repo:
 
+<h2>Quickstart</h2>
 ```
 module load conda
 conda activate snakemake
@@ -91,40 +92,7 @@ git clone https://git.agios.local/Jeff.Alvarez/orpheus.git
 Orpheus is also available as a Docker image, which may be run by following the 
 directions at [Step 4](#step-4-execute workflow).
 
-<h3>Step 2: Configure Orpheus</h3>
-Analysis names and reference data are specified with a config file. The layout 
-is based on the config file used for the 
-[Array Studio RNA-seq pipeline](https://git.agios.local/Mark.Fletcher/array_studio_RNAseq_pipeline).
-The example shown below is based on the config file 
-<code>workflow/config/config.test.yaml</code>, which was made to run the test
-data:
-
-```
-ID: 20XX_11_11_test
-Title: "YYYY-MM-DD Test"
-HPC_ID: jane.doe
-Contact_name: "Jane Doe"
-Organism: "Human"
-samples: /path/to/sample_sheet.tsv
-ref:
-        fa: /path/to/Human_B37.3.fasta
-        gtf: /path/to/Human_B37.3.gtf
-        build: Human_B37.3
-        known_sites: /path/to/dbsnp_138.b37.vcf.gz
-```
-The config file takes the following values:
-* <b>ID</b>: Filename of output directory where analysis files are written.
-* <b>Title</b>: String character for analysis ID.
-* <b>HPC_ID</b>: User ID on HPC.
-* <b>Contact_name</b>: String character of HPC ID.
-* <b>samples</b>: Absolute path to sample sheet with input fastqs and metadata.
-* <b>ref</b>: Reference data to be used in alignment and variant calling.
-     - <b>fa</b>: Absolute path to fasta file (.fasta).
-     - <b>gtf</b>: Absolute path to gene annotation file (.gtf).
-     - <b>build</b>: Name of reference genome--output files will use this prefix.
-     - <b>known_sites</b>: Absolute path to known variants file (.vcf.gz).
-
-<h3>Step 3: Create sample sheet</h3>
+<h3>Step 2: Create sample sheet</h3>
 Input fastqs and metadata are specified with a sample sheet. Each entry of the
 sample sheet describes a unique sample ID, paths to corresponding fastq paths,
 and metadata columns describing the experimental setup of the analysis. An 
@@ -137,8 +105,59 @@ delimited) (*.txt)"
 
 ![alt text](img/example_sample_sheet.png)
 
+<h3>Step 3: Configure Orpheus</h3>
+Analysis names and reference data are specified with a config file. The layout 
+is based on the config file used for the 
+[Array Studio RNA-seq pipeline](https://git.agios.local/Mark.Fletcher/array_studio_RNAseq_pipeline).
+The example shown below is based on the config file 
+<code>config/config.test.yaml</code>, which was made to run the test
+data:
+
+```
+ID: 20XX_11_11_test
+samples: /path/to/sample_sheet.tsv
+organism: "Human"
+ref:
+        fa: /path/to/Human_B37.3.fasta
+        gtf: /path/to/Human_B37.3.gtf
+        build: Human_B37.3
+        known_sites: /path/to/dbsnp_138.b37.vcf.gz
+outpath: outs
+```
+The config file takes the following values:
+* <b>ID</b>: Filename of output directory where analysis files are written.
+* <b>samples</b>: Absolute path to sample sheet with input fastqs and metadata.
+* <b>organism</b>: "Human" or "Mouse".
+* <b>outpath</b>: Default is set to write output to <code>outs</code> directory 
+* at top of Orpheus directory as a relative path, otherwise can be set to 
+* absolute path of another location.
+* <b>ref</b>: Reference data to be used in alignment and variant calling.
+     - <b>fa</b>: Absolute path to fasta file (.fasta).
+     - <b>gtf</b>: Absolute path to gene annotation file (.gtf).
+     - <b>build</b>: Name of reference genome--output files will use this prefix.
+     - <b>known_sites</b>: Absolute path to known variants file (.vcf.gz).
+
 <h3>Step 4: Execute workflow</h3>
-<h4>Docker</h4>
+<h4>Local</h4>
+Orpheus may be run on the HPC via a system-wide installation of Conda. At 
+Agios, Conda may be loaded as a module then used to activate the virtual 
+environment with Snakemake pre-installed:
+
+```
+module load conda
+conda activate snakemake
+```
+
+Orpheus is run via the Snakemake command line interface. By default, Orpheus is
+set to run using the toy data located in <code>resources</code>. Users can 
+set the path to the config file to run their analysis as observed below:
+```
+git clone https://git.agios.local/Jeff.Alvarez/orpheus.git
+cd /path/to/orpheus
+snakemake --use-conda --cores 8 --configfile /path/to/configfile.yaml
+```
+
+<h4>[TO-DO: Update Docker]</h4>
 The workflow may also be deployed as a Docker image, where a conda environment
 is set up with Snakemake and dependencies installed. When run, the conda
 environment is activated then the Snakemake directory, input FASTQ files,
@@ -156,17 +175,4 @@ docker run -it --rm \
     --directory /home/user/analysis \
     --configfile /home/user/analysis/config/config.docker.yaml \
     -s /home/user/analysis/Snakefile"
-```
-
-<h4>Local</h4>
-Test your configuration by performing a dry-run:
-
-```
-snakemake --use-conda -np
-```
-
-Execute the workflow locally using <code>$N</code> cores:
-
-```
-snakemake --use-conda --cluster --cores $N
 ```
