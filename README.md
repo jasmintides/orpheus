@@ -1,14 +1,13 @@
 <h1>Orpheus</h1>
-Orpheus (Omicsoft-inspired RNA-seq pipeline) is a workflow that performs 
-quality control, alignment, expression quantification and variant calling on 
-RNA-seq data. RNA-seq variant calling is based on 
-[GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-). 
+Orpheus (Omicsoft-inspired RNA-seq pipeline) is an RNA-seq workflow that 
+performs quality control, alignment, expression quantification and variant 
+calling (based on
+[GATK Best Practices](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-)). 
 Orpheus was written with the Python-based workflow manager 
 [Snakemake](https://snakemake.readthedocs.io/en/stable/), which is installed in 
 a Conda environment in the Agios HPC. Users may test that the pipeline is 
 working properly with the test data included in the repo:
 
-<h2>Quickstart</h2>
 ```
 module load conda
 conda activate snakemake
@@ -25,15 +24,16 @@ structure:
 ```
 ├── Snakefile
 ├── workflow
-│   ├── rules
-│   └── envs
+│   ├── envs
+│   └── rules
+│   └── scripts
 ├── config
 │   └── config.local.yaml
 │   └── config.docker.yaml
 ├── outs
 ├── benchmarks
 ├── rules
-├── data
+├── resources
 ├── .gitignore
 ├── README.md
 └── LICENSE.md
@@ -58,8 +58,8 @@ described in [Step 2](#step-2-configure-orpheus).
 The central <code>Snakefile</code> marks the entrypoint of the pipeline by 
 specifying a central rule for the expected output of the entire pipeline:
 
-* Raw gene expression counts aggregated from STAR
-* TPM gene expression counts aggregated from RSEM
+* SummarizedExperiment R object with RSEM gene counts results
+* SummarizedExperiment R object with RSEM transcript counts results
 * A MultiQC report aggregating FASTQC and STAR logs from all samples
 </li>
 
@@ -72,8 +72,8 @@ All output files generated in the workflow are stored in the <code>outs</code>
 directory, which contains subdirectories named after the analysis ID name 
 specified in the config file of a given analysis. From the directory root, the 
 raw counts, TPM counts, and MultiQC report are found in
-<code>outs/{analysis_ID}/star/raw_counts.tsv</code>, 
-<code>outs/{analysis_ID}/RSEM/tpm_counts.tsv</code>, and
+<code>outs/{analysis_ID}/SummExp/{analysis_ID}.genes_SummExp.Rds</code>, 
+<code>outs/{analysis_ID}/SummExp/{analysis_ID}.transcripts_SummExp.Rds</code>, 
 <code>outs/{analysis_ID}/qc/multiqc_report.{analysis_ID}.html</code> 
 respectively. Benchmarking data, which summarizes running time and memory 
 usage, and system logs for each rule in the pipeline are also stored in a 
@@ -127,10 +127,11 @@ outpath: outs
 The config file takes the following values:
 * <b>ID</b>: Filename of output directory where analysis files are written.
 * <b>samples</b>: Absolute path to sample sheet with input fastqs and metadata.
-* <b>organism</b>: "Human" or "Mouse".
+* <b>organism</b>: "Human" or "Mouse" - used for gene annotation of counts 
+  data.
 * <b>outpath</b>: Default is set to write output to <code>outs</code> directory 
-* at top of Orpheus directory as a relative path, otherwise can be set to 
-* absolute path of another location.
+  at top of Orpheus directory as a relative path, otherwise can be set to 
+  absolute path of another location.
 * <b>ref</b>: Reference data to be used in alignment and variant calling.
      - <b>fa</b>: Absolute path to fasta file (.fasta).
      - <b>gtf</b>: Absolute path to gene annotation file (.gtf).
