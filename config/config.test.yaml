@@ -6,4 +6,4 @@ ref:
         gtf: resources/gencode.v19.annotation.chr1.gtf
         build: Human_B37.3
         known_sites: resources/dbsnp_138.b37.chr_1.vcf.gz
-outpath: "outs"
+outpath: outs
