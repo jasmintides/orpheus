@@ -1,4 +1,4 @@
-# !/usr/bin/env Rscript
+#!/usr/bin/env Rscript
 
 library(tidyverse)
 library(biomaRt)
@@ -10,18 +10,10 @@ isoforms_expected <- read.delim(snakemake@input$isoforms_expected, header = T, r
 isoforms_tpm <- read.delim(snakemake@input$isoforms_tpm, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 sample_sheet <- read.delim(snakemake@input$sample_sheet, header = T, sep = "\t", stringsAsFactors = F)
 
-# genes_expected <- read.delim("../../outs/20XX_11_11_test/RSEM/genes.expected_counts.tsv", header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-# genes_tpm <- read.delim("../../outs/20XX_11_11_test/RSEM/genes.tpm_counts.tsv", header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-# isoforms_expected <- read.delim("../../outs/20XX_11_11_test/RSEM/isoforms.expected_counts.tsv", header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-# isoforms_tpm <- read.delim("../../outs/20XX_11_11_test/RSEM/isoforms.tpm_counts.tsv", header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-# sample_sheet <- read.delim("../../resources/sample_sheet.tsv", header = T, sep = "\t", stringsAsFactors = F)
-
 ## Important - set parameter in config file as "Human" or "Mouse" to determine whether to get human or mouse Ensembl IDs
 organism <- snakemake@params$organism
-# organism <- "Human"
 
 outfile <- snakemake@output$genes_SummExp
-# outfile <- "../../outs/20XX_11_11_test/SummExp/20XX_11_11_test.genes_SummExp.Rds"
 outpath <- dirname(outfile)
 if  (!dir.exists(outpath)) {
   dir.create(outpath)
@@ -147,7 +139,7 @@ get_transcript_anno <- function(organism, matrix) {
 # Get transcript annotation from expected counts
 transcript_anno <- get_transcript_anno(organism, isoforms_expected)
 # Get column data from sample sheet
-final_coldata <- dplyr::select(sample_sheet, sample, metadata1)
+final_coldata <- sample_sheet
 
 # Given organism specified in config file, get gene annotation for given matrix
 filter_gene_counts <- function(organism, matrix) {
@@ -214,5 +206,3 @@ transcripts_se <- SummarizedExperiment::SummarizedExperiment(assays = list(isofo
 
 saveRDS(genes_se, file = as.character(snakemake@output$genes_SummExp))
 saveRDS(transcripts_se, file = as.character(snakemake@output$transcripts_SummExp))
-# saveRDS(genes_se, file = paste0(outpath, "/" ,"20XX_11_11_test.genes_SummExp.Rds"))
-# saveRDS(transcripts_se, file = paste0(outpath, "/" ,"20XX_11_11_test.transcripts_SummExp.Rds"))
