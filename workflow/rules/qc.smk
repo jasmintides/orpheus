@@ -33,6 +33,8 @@ rule multiqc:
 		expand("{outpath}/{ID}/star/{sample}/Log.final.out", 
 			outpath = outpath, ID = ID, sample = list_of_samples),
 		expand("{outpath}/{ID}/sortmerna/{sample}.rRNA.log", 
+			outpath = outpath, ID = ID, sample = list_of_samples),
+		expand("{outpath}/{ID}/rseqc/{sample}.infer_experiment.txt",
 			outpath = outpath, ID = ID, sample = list_of_samples)
 	output:
 		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID)

@@ -25,11 +25,9 @@ rule all:
 		## Aggregated gene raw and TPM counts ##
 		"{}/{}/star/raw_counts.tsv".format(outpath, ID),
 		"{}/{}/SummExp/{}.genes_SummExp.Rds".format(outpath, ID, ID),
-		"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID)
-#		"{}/{}/RSEM/genes.expected_counts.tsv".format(outpath, ID),
-#		"{}/{}/RSEM/genes.tpm_counts.tsv".format(outpath, ID),
-#		"{}/{}/RSEM/isoforms.expected_counts.tsv".format(outpath, ID),
-#		"{}/{}/RSEM/isoforms.tpm_counts.tsv".format(outpath, ID)
+		"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID),
+		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
+			outpath = outpath, ID = ID, sample = list_of_samples)
 
 rule quant_call_variants:
 	input:
@@ -41,11 +39,6 @@ rule quant_call_variants:
 		"{}/{}/RSEM/tpm_isoforms_counts.tsv".format(outpath, ID),
 		## Per sample variant calls ##
 		expand("{outpath}/{ID}/final/{sample}.vcf.gz", 
-			outpath = outpath, ID = ID, sample = list_of_samples)
-
-rule all_2:
-	input:
-		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
 			outpath = outpath, ID = ID, sample = list_of_samples)
 
 rule multiqc_only:
