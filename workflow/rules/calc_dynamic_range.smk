@@ -39,7 +39,7 @@ rule infer_experiment:
 		bai = "{outpath}/{ID}/picard/{sample}.dupMarked.bam.bai",
 		bed = "{}/{}/bedops/{}.gtf2bed.bed".format(outpath, ID, build)
 	output:
-		"{outpath}/{ID}/rseqc/{sample}.infer_experiment.txt"
+		"{outpath}/{ID}/rseqc/{sample}.txt"
 	log:
 		"{outpath}/logs/{ID}/rseqc/{sample}.log"
 	conda:
@@ -50,7 +50,7 @@ rule infer_experiment:
 rule calc_dynamic_range:
 	input:
 		bam = "{outpath}/{ID}/picard/{sample}.dupMarked.bam",
-		strand_log = "{outpath}/{ID}/rseqc/{sample}.infer_experiment.txt",
+		strand_log = "{outpath}/{ID}/rseqc/{sample}.txt",
 		gtf = config["ref"]["gtf"]
 	params:
 		is_paired_end = lambda wildcards: is_paired_end(wildcards.sample)

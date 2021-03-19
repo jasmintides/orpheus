@@ -10,8 +10,42 @@ isoforms_expected <- read.delim(snakemake@input$isoforms_expected, header = T, r
 isoforms_tpm <- read.delim(snakemake@input$isoforms_tpm, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 sample_sheet <- read.delim(snakemake@input$sample_sheet, header = T, sep = "\t", stringsAsFactors = F)
 
+# counts_dir <- "../../outs/20XX_11_11_test/RSEM/"
+# genes_expected <- read.delim(paste0(counts_dir, "genes.expected_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+# genes_tpm <- read.delim(paste0(counts_dir, "genes.tpm_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+# isoforms_expected <- read.delim(paste0(counts_dir, "isoforms.expected_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+# isoforms_tpm <- read.delim(paste0(counts_dir, "isoforms.tpm_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+# 
+# metadata_name <- "../../resources/sample_sheet.tsv"
+# sample_sheet <- read.delim(metadata_name, header = T, sep = "\t", stringsAsFactors = F)
+
+# Read in MultiQC files
+# MultiQC_dir <- "../../outs/20XX_11_11_test/qc/multiqc_report.20XX_11_11_test_data/"
+# fastqc <- read.delim(paste0(MultiQC_dir, "multiqc_fastqc.txt"), header = T, sep = "\t", stringsAsFactors = F) %>% 
+fastqc <- read.delim(snakemake@input$fastqc, header = T, sep = "\t", stringsAsFactors = F) %>% 
+  dplyr::mutate(Sample = gsub("_[12]$", "", Sample)) %>% 
+  dplyr::group_by(Sample) %>% 
+  dplyr::summarise(across(everything(), function(x) {paste(x, collapse = "|")}))
+colnames(fastqc)[-1] <- paste0("fastqc.", colnames(fastqc)[-1])
+# star <- read.delim(paste0(MultiQC_dir, "multiqc_star.txt"), header = T, sep = "\t", stringsAsFactors = F)
+star <- read.delim(snakemake@input$star, header = T, sep = "\t", stringsAsFactors = F)
+colnames(star)[-1] <- paste0("star.", colnames(star)[-1])
+# sortmerna <- read.delim(paste0(MultiQC_dir, "multiqc_sortmerna.txt"), header = T, sep = "\t", stringsAsFactors = F)
+sortmerna <- read.delim(snakemake@input$sortmerna, header = T, sep = "\t", stringsAsFactors = F)
+colnames(sortmerna)[-1] <- paste0("sortmerna.", colnames(sortmerna)[-1])
+# rseqc <- read.delim(paste0(MultiQC_dir, "multiqc_rseqc_infer_experiment.txt"), header = T, sep = "\t", stringsAsFactors = F)
+rseqc <- read.delim(snakemake@input$rseqc, header = T, sep = "\t", stringsAsFactors = F)
+colnames(rseqc)[-1] <- paste0("rseqc.", colnames(rseqc)[-1])
+
+# Join sample sheet and QC files together
+final_coldata <- dplyr::left_join(sample_sheet, fastqc, by = c("sample" = "Sample")) %>% 
+  dplyr::left_join(star, by = c("sample" = "Sample"), suffix = c(".fastqc", ".star")) %>% 
+  dplyr::left_join(sortmerna, by = c("sample" = "Sample")) %>% 
+  dplyr::left_join(rseqc, by = c("sample" = "Sample"))
+
 ## Important - set parameter in config file as "Human" or "Mouse" to determine whether to get human or mouse Ensembl IDs
 organism <- snakemake@params$organism
+# organism <- "Human"
 
 outfile <- snakemake@output$genes_SummExp
 outpath <- dirname(outfile)
@@ -138,8 +172,6 @@ get_transcript_anno <- function(organism, matrix) {
 
 # Get transcript annotation from expected counts
 transcript_anno <- get_transcript_anno(organism, isoforms_expected)
-# Get column data from sample sheet
-final_coldata <- sample_sheet
 
 # Given organism specified in config file, get gene annotation for given matrix
 filter_gene_counts <- function(organism, matrix) {
