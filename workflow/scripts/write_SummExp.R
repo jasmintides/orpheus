@@ -3,6 +3,7 @@
 library(tidyverse)
 library(biomaRt)
 library(SummarizedExperiment)
+# library(HDF5Array)
 
 genes_expected <- read.delim(snakemake@input$genes_expected, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 genes_tpm <- read.delim(snakemake@input$genes_tpm, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
@@ -21,7 +22,7 @@ sample_sheet <- read.delim(snakemake@input$sample_sheet, header = T, sep = "\t",
 
 # Read in MultiQC files
 # MultiQC_dir <- "../../outs/20XX_11_11_test/qc/multiqc_report.20XX_11_11_test_data/"
-# fastqc <- read.delim(paste0(MultiQC_dir, "multiqc_fastqc.txt"), header = T, sep = "\t", stringsAsFactors = F) %>% 
+#fastqc <- read.delim(paste0(MultiQC_dir, "multiqc_fastqc.txt"), header = T, sep = "\t", stringsAsFactors = F) %>%
 fastqc <- read.delim(snakemake@input$fastqc, header = T, sep = "\t", stringsAsFactors = F) %>% 
   dplyr::mutate(Sample = gsub("_[12]$", "", Sample)) %>% 
   dplyr::group_by(Sample) %>% 

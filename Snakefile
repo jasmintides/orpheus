@@ -18,6 +18,41 @@ chr_dict = {"chunk_01": "-L chr1", "chunk_02": "-L chr2", "chunk_03": "-L chr3",
 chr_chunks = list(chr_dict.keys())
 chr_params = list(chr_dict.values())
 
+#if config["run_sra_pipeline"] is True:
+#	subworkflow sra_pipeline:
+#		workdir:
+#			config["sra_workdir"]
+#		snakefile:
+#			config["sra_Snakefile"]
+#		configfile:
+#			config["sra_configfile"]
+#
+#	sample_sheet = "{}/{}/{}_orpheus_sample_sheet.tsv".format(config["sra_outpath"], 
+#			config["sra_BioProject_ID"], 
+#			config["sra_BioProject_ID"])
+
+#	rule all_sra:
+#		input:
+#			sra_pipeline(sample_sheet),
+#			"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID),
+#			"{}/{}/star/raw_counts.tsv".format(outpath, ID),
+#			"{}/{}/SummExp/{}.genes_SummExp.Rds".format(outpath, ID, ID),
+#			"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID)
+
+#else:
+#	samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
+#	list_of_samples = samples["sample"].tolist()
+#	template_sample = list_of_samples[0]
+
+#	rule all_no_sra:
+#		input:
+#			"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID),
+#			"{}/{}/star/raw_counts.tsv".format(outpath, ID),
+#			"{}/{}/SummExp/{}.genes_SummExp.Rds".format(outpath, ID, ID),
+#			"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID),
+#			expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
+#				outpath = outpath, ID = ID, sample = list_of_samples)
+
 rule all:
 	input:
 		## QC report (fastqc, STAR) ##
