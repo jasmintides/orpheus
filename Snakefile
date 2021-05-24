@@ -61,8 +61,8 @@ rule all:
 		"{}/{}/star/raw_counts.tsv".format(outpath, ID),
 		"{}/{}/SummExp/{}.genes_SummExp.Rds".format(outpath, ID, ID),
 		"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID),
-		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
-			outpath = outpath, ID = ID, sample = list_of_samples)
+#		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
+#			outpath = outpath, ID = ID, sample = list_of_samples)
 
 rule quant_call_variants:
 	input:
@@ -88,5 +88,5 @@ include: "workflow/rules/call.smk"
 include: "workflow/rules/quant.smk"
 include: "workflow/rules/rRNA_filter.smk"
 include: 'workflow/rules/qc.smk'
-include: 'workflow/rules/calc_dynamic_range.smk'
+#include: 'workflow/rules/calc_dynamic_range.smk'
 include: 'workflow/rules/write_se.smk'
