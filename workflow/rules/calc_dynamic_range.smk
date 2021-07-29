@@ -26,6 +26,8 @@ rule samtools_index:
 rule gtf2bed:
 	input:
 		gtf = config["ref"]["gtf"]
+	log:
+		"{}/logs/{}/bedops/{}.log".format(outpath, ID, build)
 	output:
 		bed = "{}/{}/bedops/{}.gtf2bed.bed".format(outpath, ID, build)
 	conda:
