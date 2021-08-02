@@ -49,18 +49,18 @@ rule infer_experiment:
 	shell:
 		"infer_experiment.py -r {input.bed} -i {input.bam} > {output}"
 
-rule calc_dynamic_range:
-	input:
-		bam = "{outpath}/{ID}/picard/{sample}.dupMarked.bam",
-		strand_log = "{outpath}/{ID}/rseqc/{sample}.txt",
-		gtf = config["ref"]["gtf"]
-	params:
-		is_paired_end = lambda wildcards: is_paired_end(wildcards.sample)
-	output:
-		"{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt"
-	threads:
-		4
-	conda:
-		"../envs/dupRadar.yaml"
-	script:
-		"../scripts/calculate_dynamic_range.R"
+#rule calc_dynamic_range:
+#	input:
+#		bam = "{outpath}/{ID}/picard/{sample}.dupMarked.bam",
+#		strand_log = "{outpath}/{ID}/rseqc/{sample}.txt",
+#		gtf = config["ref"]["gtf"]
+#	params:
+#		is_paired_end = lambda wildcards: is_paired_end(wildcards.sample)
+#	output:
+#		"{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt"
+#	threads:
+#		4
+#	conda:
+#		"../envs/dupRadar.yaml"
+#	script:
+#		"../scripts/calculate_dynamic_range.R"
