@@ -1,0 +1,9 @@
+ID: kallisto-test-20210802
+samples: resources/sample_sheet.kallisto.tsv
+organism: "Human"
+ref:
+        fa: /data/exploratory/Users/jasmine.alvarez/app/kallisto/test/transcripts.fasta.gz
+        gtf: /data/exploratory/Users/jasmine.alvarez/app/kallisto/test/transcripts.gtf.gz
+        build: Human_hg38
+        known_sites: ""
+outpath: /data/exploratory/Users/jasmine.alvarez
