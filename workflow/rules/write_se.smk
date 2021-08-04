@@ -2,8 +2,8 @@ rule write_se:
 	input:
 		genes_expected = "{}/{}/RSEM/genes.expected_counts.tsv".format(outpath, ID),
 		genes_tpm = "{}/{}/RSEM/genes.tpm_counts.tsv".format(outpath, ID),
-		isoforms_expected = "{}/{}/RSEM/isoforms.expected_counts.tsv".format(outpath, ID),
-		isoforms_tpm = "{}/{}/RSEM/isoforms.tpm_counts.tsv".format(outpath, ID),
+		transcripts_expected = "{}/{}/RSEM/transcripts.expected_counts.tsv".format(outpath, ID),
+		transcripts_tpm = "{}/{}/RSEM/transcripts.tpm_counts.tsv".format(outpath, ID),
 		sample_sheet = config["samples"],
 		fastqc = "{}/{}/qc/multiqc_report.{}_data/multiqc_fastqc.txt".format(outpath, ID, ID),
 		star = "{}/{}/qc/multiqc_report.{}_data/multiqc_star.txt".format(outpath, ID, ID),

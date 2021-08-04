@@ -26,8 +26,8 @@ rule rsem_calculate_expression:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
 		build = config["ref"]["build"]
 	output:
-		"{outpath}/{ID}/RSEM/{sample}.isoforms.results",
-		"{outpath}/{ID}/RSEM/{sample}.genes.results"
+		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.results"),
+		temp("{outpath}/{ID}/RSEM/{sample}.genes.results")
 	threads:
 		4
 	conda:
@@ -43,25 +43,6 @@ rule rsem_calculate_expression:
 		"--fragment-length-max 1000 --no-bam-output "
 		"--bam {input.bam} {input.ref}/{params.build} "
 		"{wildcards.outpath}/{wildcards.ID}/RSEM/{wildcards.sample} ; fi"
-
-rule create_raw_counts_star:
-	input:
-		ind_counts = "{outpath}/{ID}/star/{sample}/ReadsPerGene.out.tab"
-	output:
-		temp("{outpath}/{ID}/star/{sample}/{sample}.counts")
-	shell:
-		"tail -n +5 {input.ind_counts} | cut -f4 | sed '1i {wildcards.sample}' > "
-		"{wildcards.outpath}/{wildcards.ID}/star/{wildcards.sample}/{wildcards.sample}.counts"
-
-rule create_raw_counts_table:
-	input:
-		gene_ids = "{}/{}/star/gene_ids.txt".format(outpath, ID),
-		ind_counts = expand('{outpath}/{ID}/star/{sample}/{sample}.counts', 
-				outpath = outpath, ID = ID, sample = list_of_samples)
-	output:
-		counts = "{outpath}/{ID}/star/raw_counts.tsv"
-	shell:
-		"paste {wildcards.outpath}/{wildcards.ID}/star/gene_ids.txt {input.ind_counts} > {output.counts}"
 
 ###### RSEM (expected counts, TPM - gene) ######
 
@@ -101,8 +82,7 @@ rule aggregate_gene_expected_counts:
 	output:
 		counts = "{outpath}/{ID}/RSEM/genes.expected_counts.tsv"
 	shell:
-		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/gene_ids.txt "
-		"{input.ind_counts} > {output.counts}"
+		"paste {input.gene_ids} {input.ind_counts} > {output.counts}"
 
 rule aggregate_gene_tpm_counts:
 	input:
@@ -112,57 +92,54 @@ rule aggregate_gene_tpm_counts:
 	output:
 		counts = "{outpath}/{ID}/RSEM/genes.tpm_counts.tsv"
 	shell:
-		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/gene_ids.txt "
-		"{input.ind_counts} > {output.counts}"
+		"paste {input.gene_ids} {input.ind_counts} > {output.counts}"
 
 ### RSEM (TPM - transcript) ###
 
-rule create_isoform_ids_rsem:
+rule create_transcript_ids_rsem:
 	input:
 		template = expand("{outpath}/{ID}/RSEM/{sample}.isoforms.results", 
 				outpath = outpath, ID = ID, sample = list_of_samples[0])
 	output:
-		temp("{}/{}/RSEM/isoforms_ids.txt".format(outpath, ID))
+		temp("{}/{}/RSEM/transcripts_ids.txt".format(outpath, ID))
 	shell:
 		"tail -n +2 {input.template} | cut -f1 | sed '1i \n' > "
 		"{output}"
 
-rule create_isoform_expected_counts:
+rule create_transcript_expected_counts:
 	input:
 		ind_counts = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
 	output:
-		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.expected.counts")
+		temp("{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts")
 	shell:
 		"tail -n +2 {input.ind_counts} | cut -f5 | sed '1i {wildcards.sample}' > "
 		"{output}"
 
-rule create_isoform_tpm_counts:
+rule create_transcript_tpm_counts:
 	input:
 		ind_counts = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
 	output:
-		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.tpm.counts")
+		temp("{outpath}/{ID}/RSEM/{sample}.transcripts.tpm.counts")
 	shell:
 		"tail -n +2 {input.ind_counts} | cut -f6 | sed '1i {wildcards.sample}' > "
 		"{output}"
 
-rule aggregate_isoform_expected_counts:
+rule aggregate_transcript_expected_counts:
 	input:
-		gene_ids = "{}/{}/RSEM/isoforms_ids.txt".format(outpath, ID),
-		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.isoforms.expected.counts', 
+		transcripts_ids = "{}/{}/RSEM/transcripts_ids.txt".format(outpath, ID),
+		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts', 
 				outpath = outpath, ID = ID, sample = list_of_samples)
 	output:
-		counts = "{outpath}/{ID}/RSEM/isoforms.expected_counts.tsv"
+		counts = "{outpath}/{ID}/RSEM/transcripts.expected_counts.tsv"
 	shell:
-		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/isoforms_ids.txt "
-		"{input.ind_counts} > {output.counts}"
+		"paste {input.transcripts_ids} {input.ind_counts} > {output.counts}"
 
-rule aggregate_isoform_tpm_counts:
+rule aggregate_transcript_tpm_counts:
 	input:
-		gene_ids = "{}/{}/RSEM/isoforms_ids.txt".format(outpath, ID),
-		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.isoforms.tpm.counts', 
+		transcripts_ids = "{}/{}/RSEM/transcripts_ids.txt".format(outpath, ID),
+		ind_counts = expand('{outpath}/{ID}/RSEM/{sample}.transcripts.tpm.counts', 
 				outpath = outpath, ID = ID, sample = list_of_samples)
 	output:
-		counts = "{outpath}/{ID}/RSEM/isoforms.tpm_counts.tsv"
+		counts = "{outpath}/{ID}/RSEM/transcripts.tpm_counts.tsv"
 	shell:
-		"paste {wildcards.outpath}/{wildcards.ID}/RSEM/isoforms_ids.txt "
-		"{input.ind_counts} > {output.counts}"
+		"paste {input.transcripts_ids} {input.ind_counts} > {output.counts}"

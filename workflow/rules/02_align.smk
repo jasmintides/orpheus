@@ -37,9 +37,8 @@ rule star_pe_multi:
 	params:
 		index = "{}/{}/{}".format(outpath, ID, config["ref"]["build"]),
 		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate "
-			"--quantMode TranscriptomeSAM GeneCounts"
+			"--quantMode TranscriptomeSAM"
 	output:
-		temp("{outpath}/{ID}/star/{sample}/ReadsPerGene.out.tab"),
 		"{outpath}/{ID}/star/{sample}/Aligned.sortedByCoord.out.bam",
 		"{outpath}/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",
 		log = temp("{outpath}/{ID}/star/{sample}/Log.final.out")
@@ -47,13 +46,3 @@ rule star_pe_multi:
 		8
 	wrapper:
 		"0.59.1/bio/star/align"
-
-rule create_gene_ids_star:
-	input:
-		expand("{outpath}/{ID}/star/{sample}/ReadsPerGene.out.tab", 
-			outpath = outpath, ID = ID, sample = list_of_samples[0])
-	output:
-		temp("{outpath}/{ID}/star/gene_ids.txt")
-	shell:
-		"tail -n +5 {input} | cut -f1 | sed '1i \n' > "
-		"{wildcards.outpath}/{wildcards.ID}/star/gene_ids.txt"
