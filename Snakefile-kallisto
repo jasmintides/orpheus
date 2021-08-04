@@ -11,38 +11,19 @@ ID = config['ID']
 outpath = config['outpath']
 build = config["ref"]["build"]
 
-### include rules ###
 include: "workflow/rules/00_common.smk"
-include: 'workflow/rules/02_align.smk'
+include: "workflow/rules/01_trim.smk"
+include: "workflow/rules/02_align.smk"
+include: "workflow/rules/03_quant.smk"
+
+myoutput = list()
+
+if config["aligner"] in ["Kallisto", "KALLISTO", "kallisto"]:
+	myoutput.append("{outpath}/{ID}/kallisto/outs/{sample}/abundance.tsv")
+elif config["aligner"] in ["STAR", "Star", "star"]:
+	myoutput.append("{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts")
 
 rule all:
 	input:
-		expand("{outpath}/{ID}/kallisto/outs/{sample}/abundance.tsv",
+		expand(myoutput,
 		outpath = outpath, ID = ID, sample = list_of_samples)
-
-rule index:
-	input: fasta = config["ref"]["fa"]
-	output: "{}/{}/kallisto/{}".format(outpath, ID, build)
-	conda: "workflow/envs/kallisto.yaml"
-	shell: "kallisto index -i {output} {input}"
-
-rule kallisto_quant:
-	input:
-		unpack(get_fastq),
-		index = "{}/{}/kallisto/{}".format(outpath, ID, build)
-	params:
-		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
-	output:
-		outdir = directory("{outpath}/{ID}/kallisto/outs/{sample}"),
-		counts_h5 = "{outpath}/{ID}/kallisto/outs/{sample}/abundance.h5",
-		counts_tsv = "{outpath}/{ID}/kallisto/outs/{sample}/abundance.tsv",
-		log = "{outpath}/{ID}/kallisto/outs/{sample}/run_info.json"
-	conda: "workflow/envs/kallisto.yaml"
-	log: "{outpath}/{ID}/log/{sample}.log"
-	shell:
-		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
-        	"kallisto quant -i {input.index} -o {output[0]} -b 100 "
-		"{input.r1} {input.r2} ; "
-		"elif [[ $is_single_end == False ]]; then "
-        	"kallisto quant -i {input.index} -o {output[0]} -b 100 --single "
-		"-l 180 -s 20 {input.r1} ; fi"

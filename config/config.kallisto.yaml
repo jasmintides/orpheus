@@ -7,3 +7,4 @@ ref:
         build: Human_hg38
         known_sites: ""
 outpath: /data/exploratory/Users/jasmine.alvarez
+aligner : "Kallisto"

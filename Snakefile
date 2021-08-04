@@ -10,6 +10,7 @@ template_sample = list_of_samples[0]
 ID = config['ID']
 outpath = config['outpath']
 build = config["ref"]["build"]
+aligner = config["aligner"]
 
 chr_dict = {"chunk_01": "-L chr1", "chunk_02": "-L chr2", "chunk_03": "-L chr3",
 	"chunk_04": "-L chr4", "chunk_05": "-L chr5", "chunk_06": "-L chr6",
