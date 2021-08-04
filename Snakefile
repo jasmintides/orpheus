@@ -55,7 +55,7 @@ include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
 include: 'workflow/rules/02_align.smk'
 include: "workflow/rules/call.smk"
-include: "workflow/rules/quant.smk"
+include: "workflow/rules/03_quant.smk"
 include: "workflow/rules/rRNA_filter.smk"
 include: 'workflow/rules/qc.smk'
 include: 'workflow/rules/calc_dynamic_range.smk'

@@ -7,15 +7,15 @@ library(SummarizedExperiment)
 
 genes_expected <- read.delim(snakemake@input$genes_expected, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 genes_tpm <- read.delim(snakemake@input$genes_tpm, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-isoforms_expected <- read.delim(snakemake@input$isoforms_expected, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-isoforms_tpm <- read.delim(snakemake@input$isoforms_tpm, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+transcripts_expected <- read.delim(snakemake@input$transcripts_expected, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+transcripts_tpm <- read.delim(snakemake@input$transcripts_tpm, header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 sample_sheet <- read.delim(snakemake@input$sample_sheet, header = T, sep = "\t", stringsAsFactors = F)
 
 # counts_dir <- "../../outs/20XX_11_11_test/RSEM/"
 # genes_expected <- read.delim(paste0(counts_dir, "genes.expected_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 # genes_tpm <- read.delim(paste0(counts_dir, "genes.tpm_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-# isoforms_expected <- read.delim(paste0(counts_dir, "isoforms.expected_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
-# isoforms_tpm <- read.delim(paste0(counts_dir, "isoforms.tpm_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+# transcripts_expected <- read.delim(paste0(counts_dir, "transcripts.expected_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
+# transcripts_tpm <- read.delim(paste0(counts_dir, "transcripts.tpm_counts.tsv"), header = T, row.names = 1, sep = "\t", stringsAsFactors = F)
 # 
 # metadata_name <- "../../resources/sample_sheet.tsv"
 # sample_sheet <- read.delim(metadata_name, header = T, sep = "\t", stringsAsFactors = F)
@@ -172,7 +172,7 @@ get_transcript_anno <- function(organism, matrix) {
 }
 
 # Get transcript annotation from expected counts
-transcript_anno <- get_transcript_anno(organism, isoforms_expected)
+transcript_anno <- get_transcript_anno(organism, transcripts_expected)
 
 # Given organism specified in config file, get gene annotation for given matrix
 filter_gene_counts <- function(organism, matrix) {
@@ -224,16 +224,16 @@ filter_transcript_counts <- function(matrix) {
   return(filtered_matrix)
 }
 
-filtered_isoforms_expected <- filter_transcript_counts(isoforms_expected)
-filtered_isoforms_tpm <- filter_transcript_counts(isoforms_tpm)
+filtered_transcripts_expected <- filter_transcript_counts(transcripts_expected)
+filtered_transcripts_tpm <- filter_transcript_counts(transcripts_tpm)
 
 # Create SummarizedExperiments
 genes_se <- SummarizedExperiment::SummarizedExperiment(assays = list(genes_expected = filtered_genes_expected,
                                                                      genes_tpm = filtered_genes_tpm),
                                                        colData = final_coldata,
                                                        rowData = gene_anno)
-transcripts_se <- SummarizedExperiment::SummarizedExperiment(assays = list(isoforms_expected = filtered_isoforms_expected,
-                                                                        isoforms_tpm = filtered_isoforms_tpm),
+transcripts_se <- SummarizedExperiment::SummarizedExperiment(assays = list(transcripts_expected = filtered_transcripts_expected,
+                                                                        transcripts_tpm = filtered_transcripts_tpm),
                                                           colData = final_coldata,
                                                           rowData = transcript_anno)
 
