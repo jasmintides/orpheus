@@ -6,11 +6,9 @@ def is_paired_end(sample):
 
 def get_fastq(wildcards):
 	if not is_single_end(wildcards.sample):
-		# paired-end
 		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0],
 			'r2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
 	else:
-		# single-end
 		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
 
 def get_trimmed(wildcards):
@@ -22,16 +20,42 @@ def get_trimmed(wildcards):
 	else:
 		return {'fq1': "{outpath}/{ID}/trimmed/{sample}.fq.gz".format(**wildcards)}
 
-myoutput = list()
-
-if config["aligner"] in ["Kallisto", "KALLISTO", "kallisto"]:
-	myoutput.append("{outpath}/{ID}/kallisto/outs/{sample}/abundance.tsv")
-elif config["aligner"] in ["STAR", "Star", "star"]:
-	myoutput.append("{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts")
-
-transcript_ids = list()
-
-def get_transcript_ids(aligner):
+def get_transcript_counts(aligner):
+	transcript_ids = list()
 	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
-		return {'template':
-		template = expand("{outpath}/{ID}/RSEM/{sample}.isoforms.results", 
+		string = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv"
+		transcript_ids.append(string)
+	elif config["aligner"] in ["STAR", "Star", "star"]:
+		string = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
+		transcript_ids.append(string)
+	return transcript_ids
+
+def name_id_file(aligner):
+	id_file = list()
+	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+		string = "counts/kallisto/transcripts_ids.txt".format(outpath, ID)
+		id_file.append(string)
+	elif config["aligner"] in ["STAR", "Star", "star"]:
+		string = "{}/{}/RSEM/transcripts_ids.txt".format(outpath, ID)
+		id_file.append(string)
+	return id_file
+
+def get_quant_outs(aligner):
+	quant_outs = list()
+	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+		string = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv",
+		quant_outs.append(string)
+	elif config["aligner"] in ["STAR", "Star", "star"]:
+		string = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
+		quant_outs.append(string)
+	return quant_outs
+
+def name_counts_file(aligner):
+	counts_file = list()
+	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+		string = "{outpath}/{ID}/counts/kallisto/{sample}.transcripts.expected.counts"
+		counts_file.append(string)
+	elif config["aligner"] in ["STAR", "Star", "star"]:
+		string = "{outpath}/{ID}/counts/RSEM/{sample}.transcripts.expected.counts"
+		counts_file.append(string)
+	return counts_file
