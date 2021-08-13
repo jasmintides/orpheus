@@ -28,7 +28,6 @@ rule all:
 		## QC report (fastqc, STAR) ##
 		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID),
 		## Aggregated gene raw and TPM counts ##
-		"{}/{}/star/raw_counts.tsv".format(outpath, ID),
 		"{}/{}/SummExp/{}.genes_SummExp.Rds".format(outpath, ID, ID),
 		"{}/{}/SummExp/{}.transcripts_SummExp.Rds".format(outpath, ID, ID),
 #		expand("{outpath}/{ID}/rseqc/{sample}.dynamic_range.txt",
