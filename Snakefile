@@ -24,6 +24,5 @@ rule all: input: expand(myoutput, outpath = outpath, ID = ID)
 
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
-include: "workflow/rules/02a_kallisto.smk"
-include: "workflow/rules/02b_STAR.smk"
+include: "workflow/rules/02_align.smk"
 include: "workflow/rules/03_quant-prime.smk"

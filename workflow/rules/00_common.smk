@@ -11,14 +11,22 @@ def get_fastq(wildcards):
 	else:
 		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
 
-def get_trimmed(wildcards):
-	if not is_single_end(wildcards.sample):
-		return {'fq1': expand("{outpath}/{ID}/trimmed/{sample}_{group}.fq.gz", 
-			group = 1, **wildcards),
-			'fq2': expand("{outpath}/{ID}/trimmed/{sample}_{group}.fq.gz", 
-			group = 2, **wildcards)}
-	else:
-		return {'fq1': "{outpath}/{ID}/trimmed/{sample}.fq.gz".format(**wildcards)}
+def fastq_to_aligner(wildcards):
+	if config["skip_trimming"] is True:
+		if not is_single_end(wildcards.sample):
+			return {'fq1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0],
+				'fq2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
+		else:
+			return {'fq1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
+
+	elif config["skip_trimming"] is False:
+		if not is_single_end(wildcards.sample):
+			return {'fq1': expand("{outpath}/{ID}/trimmed/{sample}_{group}.fq.gz", 
+				group = 1, **wildcards),
+				'fq2': expand("{outpath}/{ID}/trimmed/{sample}_{group}.fq.gz", 
+					group = 2, **wildcards)}
+		else:
+			return {'fq1': "{outpath}/{ID}/trimmed/{sample}.fq.gz".format(**wildcards)}
 
 def get_transcript_counts(aligner):
 	transcript_ids = list()
@@ -59,3 +67,10 @@ def name_counts_file(aligner):
 		string = "{outpath}/{ID}/counts/RSEM/{sample}.transcripts.expected.counts"
 		counts_file.append(string)
 	return counts_file
+
+def get_fq1_qc(wildcards):
+	return samples.loc[(wildcards.sample), ["fq1"]].dropna()
+
+def get_fq2_qc(wildcards):
+	if not is_single_end(wildcards.sample):
+		return samples.loc[(wildcards.sample), ["fq2"]].dropna()

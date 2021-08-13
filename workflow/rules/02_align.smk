@@ -11,7 +11,7 @@ rule star_index_new:
 rule star_pe_multi:
     input:
         directory("{}/{}/{}/{}".format(outpath, ID, aligner, config["ref"]["build"])),
-        unpack(get_trimmed)
+        unpack(fastq_to_aligner)
     benchmark:
         "{outpath}/{ID}/benchmarks/{aligner}/01_star_align.{sample}.txt"
     log: "{outpath}/{ID}/logs/{aligner}/{sample}/{sample}.log"
@@ -34,7 +34,7 @@ rule kallisto_index:
 
 rule kallisto_quant:
     input:
-        unpack(get_trimmed),
+        unpack(fastq_to_aligner),
         index = "{}/{}/{}/{}".format(outpath, ID, aligner, build)
     params:
         is_single_end = lambda wildcards: is_single_end(wildcards.sample),

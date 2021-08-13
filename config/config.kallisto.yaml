@@ -1,4 +1,4 @@
-ID: kallisto-test-20210802
+ID: kallisto-test-20210811
 samples: /data/exploratory/Users/jasmine.alvarez/orpheus/resources/sample_sheet.new.tsv
 organism: "Human"
 ref:
@@ -8,3 +8,4 @@ ref:
     known_sites: ""
 outpath: /data/exploratory/Users/jasmine.alvarez/orpheus/outs
 aligner: STAR
+skip_trimming: True

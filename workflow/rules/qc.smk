@@ -1,10 +1,3 @@
-def get_fq1_qc(wildcards):
-	return samples.loc[(wildcards.sample), ["fq1"]].dropna()
-
-def get_fq2_qc(wildcards):
-	if not is_single_end(wildcards.sample):
-		return samples.loc[(wildcards.sample), ["fq2"]].dropna()
-
 rule fastqc_fq1:
 	input:
 		get_fq1_qc
