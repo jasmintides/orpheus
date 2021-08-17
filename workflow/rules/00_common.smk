@@ -16,6 +16,20 @@ def get_trimmed(w):
 		trimmed_dict["r2"] = string.format(w.outpath, w.ID, w.sample, 2)
 	return trimmed_dict
 
+rule create_symbolic_link:
+	input:
+		unpack(get_fastq)
+	params:
+		skip_trimming = config["skip_trimming"]
+	output:
+		r1 = temp("{outpath}/{ID}/untrimmed/{sample}_1.fastq"),
+		r2 = temp("{outpath}/{ID}/untrimmed/{sample}_2.fastq")
+	run:
+		if skip_trimming(params.skip_trimming):
+			shell("ln -sr {input.r1} {output.r1}")
+		elif not is_single_end(wildcards.sample):
+			shell("ln -sr {input.r2} {output.r2}")
+
 def fastq_to_aligner(wildcards):
 	if wildcards.skip_trimming:
 		x = get_fastq(wildcards.sample)
