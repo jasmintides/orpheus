@@ -7,5 +7,5 @@ ref:
     build: Human_hg38
     known_sites: ""
 outpath: /data/exploratory/Users/jasmine.alvarez/orpheus/outs
-aligner: STAR
-skip_trimming: True
+aligner: kallisto
+skip_trimming: False

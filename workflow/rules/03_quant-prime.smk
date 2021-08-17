@@ -14,11 +14,11 @@ rule create_transcript_counts:
 			shell("tail -n +2 {input.ind_counts} | cut -f5 | "
 				"sed '1i {wildcards.sample}' > {output}")
 
-rule aggregate_transcript_counts:
-	input:
-		*name_id_file(aligner),
-		expand(*name_counts_file(aligner), 
-			outpath = outpath, ID = ID, sample = list_of_samples)
-	output: myoutput
-	shell:
-		"paste {input[0]} {input[1]} > {output}"
+#rule aggregate_transcript_counts:
+#	input:
+#		*name_id_file(aligner),
+#		expand(*name_counts_file(aligner), 
+#			outpath = outpath, ID = ID, sample = list_of_samples)
+#	output: myoutput
+#	shell:
+#		"paste {input[0]} {input[1]} > {output}"

@@ -1,32 +1,27 @@
 def is_single_end(sample):
 	return pd.isnull(samples.loc[(sample), "fq2"])
 
-def is_paired_end(sample):
-	return pd.notnull(samples.loc[(sample), "fq2"])
+def get_fastq(sample):
+	fastq_dict = dict()
+	fastq_dict["r1"] = samples[(samples["sample"] == sample), "fq1" & samples["fq1" ==]
+#	if not is_single_end(sample):
+#		fastq_dict["r2"] = samples.loc[samples.index.intersection(sample, "fq2")]
+	return fastq_dict
 
-def get_fastq(wildcards):
-	if not is_single_end(wildcards.sample):
-		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0],
-			'r2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
-	else:
-		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
+def get_trimmed(w):
+	trimmed_dict = dict()
+	string = "{}/{}/trimmed/{}_{}.fq.gz"
+	trimmed_dict["r1"] = string.format(w.outpath, w.ID, w.sample, 1)
+	if not is_single_end(w.sample):
+		trimmed_dict["r2"] = string.format(w.outpath, w.ID, w.sample, 2)
+	return trimmed_dict
 
 def fastq_to_aligner(wildcards):
-	if config["skip_trimming"] is True:
-		if not is_single_end(wildcards.sample):
-			return {'fq1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0],
-				'fq2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
-		else:
-			return {'fq1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
-
-	elif config["skip_trimming"] is False:
-		if not is_single_end(wildcards.sample):
-			return {'fq1': expand("{outpath}/{ID}/trimmed/{sample}_{group}.fq.gz", 
-				group = 1, **wildcards),
-				'fq2': expand("{outpath}/{ID}/trimmed/{sample}_{group}.fq.gz", 
-					group = 2, **wildcards)}
-		else:
-			return {'fq1': "{outpath}/{ID}/trimmed/{sample}.fq.gz".format(**wildcards)}
+	if wildcards.skip_trimming:
+		x = get_fastq(wildcards.sample)
+	elif not skip_trimming:
+		x = wildcards.get_trimmed(wildcards)
+	return x
 
 def get_transcript_counts(aligner):
 	transcript_ids = list()
@@ -41,17 +36,17 @@ def get_transcript_counts(aligner):
 def name_id_file(aligner):
 	id_file = list()
 	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
-		string = "counts/kallisto/transcripts_ids.txt".format(outpath, ID)
+		string = "{}/{}/kallisto/template/transcripts_ids.txt".format(outpath, ID)
 		id_file.append(string)
 	elif config["aligner"] in ["STAR", "Star", "star"]:
-		string = "{}/{}/RSEM/transcripts_ids.txt".format(outpath, ID)
+		string = "{}/{}/RSEM/template/transcripts_ids.txt".format(outpath, ID)
 		id_file.append(string)
 	return id_file
 
 def get_quant_outs(aligner):
 	quant_outs = list()
 	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
-		string = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv",
+		string = "{outpath}/{ID}/kallisto/{sample}.abundance.tsv",
 		quant_outs.append(string)
 	elif config["aligner"] in ["STAR", "Star", "star"]:
 		string = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
@@ -61,10 +56,10 @@ def get_quant_outs(aligner):
 def name_counts_file(aligner):
 	counts_file = list()
 	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
-		string = "{outpath}/{ID}/counts/kallisto/{sample}.transcripts.expected.counts"
+		string = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
 		counts_file.append(string)
 	elif config["aligner"] in ["STAR", "Star", "star"]:
-		string = "{outpath}/{ID}/counts/RSEM/{sample}.transcripts.expected.counts"
+		string = "{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts"
 		counts_file.append(string)
 	return counts_file
 

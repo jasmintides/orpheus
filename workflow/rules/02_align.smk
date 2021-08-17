@@ -27,28 +27,28 @@ rule star_pe_multi:
     wrapper: "0.59.1/bio/star/align"
 
 rule kallisto_index:
-    input: fasta = config["ref"]["fa"]
-    output: "{}/{}/{}/{}".format(outpath, ID, aligner, build)
-    conda: "../envs/kallisto.yaml"
-    shell: "kallisto index -i {output} {input}"
+	input: fasta = config["ref"]["fa"]
+	output:
+		directory("{}/{}/{}".format(outpath, ID, aligner)),
+		index = "{}/{}/{}/{}.idx".format(outpath, ID, aligner, build)
+	conda: "../envs/kallisto.yaml"
+	shell: "kallisto index -i {output.index} {input}"
 
 rule kallisto_quant:
-    input:
-        unpack(fastq_to_aligner),
-        index = "{}/{}/{}/{}".format(outpath, ID, aligner, build)
-    params:
-        is_single_end = lambda wildcards: is_single_end(wildcards.sample),
-    output:
-        outdir = directory("{outpath}/{ID}/{aligner}/outs/{sample}"),
-        counts_h5 = "{outpath}/{ID}/{aligner}/outs/{sample}/abundance.h5",
-        counts_tsv = "{outpath}/{ID}/{aligner}/outs/{sample}/abundance.tsv",
-        log = "{outpath}/{ID}/{aligner}/outs/{sample}/run_info.json"
-    conda: "../envs/kallisto.yaml"
-    log: "{outpath}/{ID}/{aligner}/log/{sample}.log"
-    shell:
-        "is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
-        "kallisto quant -i {input.index} -o {output[0]} -b 100 "
-        "{input.fq1} {input.fq2} ; "
-        "elif [[ $is_single_end == False ]]; then "
-        "kallisto quant -i {input.index} -o {output[0]} -b 100 --single "
-        "-l 180 -s 20 {input.fq1} ; fi"
+	input:
+		index = "{}/{}/{}/{}.idx".format(outpath, ID, aligner, build)
+	params: is_single_end = lambda wildcards: is_single_end(wildcards.sample)
+	output:
+		outdir = directory("{outpath}/{ID}/{aligner}/{sample}"),
+		counts_h5 = "{outpath}/{ID}/{aligner}/{sample}/abundance.h5",
+		counts_tsv = "{outpath}/{ID}/{aligner}/{sample}/abundance.tsv",
+		log = "{outpath}/{ID}/{aligner}/{sample}/run_info.json"
+	conda: "../envs/kallisto.yaml"
+	log: "{outpath}/{ID}/{aligner}/log/{sample}.log"
+	shell:
+		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
+		"kallisto quant -i {input.index} -o {output.outdir} -b 100 "
+		"{input.r1} {input.r2} ; "
+		"elif [[ $is_single_end == False ]]; then "
+		"kallisto quant -i {input.index} -o {output.outdir} -b 100 --single "
+		"-l 180 -s 20 {input.r1} ; fi"
