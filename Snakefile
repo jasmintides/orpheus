@@ -5,11 +5,9 @@ import pandas as pd
 import re
 
 configfile: "config/config.test.yaml"
-wildcard_constraints: sample = '[^_\W]+'
+wildcard_constraints: sample = '^[^_\W]+'
 
-samples = pd.read_table(config["samples"], dtype = str)
-samples.set_index("sample", drop = False)
-samples.set_index("fq1", drop = False)
+samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
 list_of_samples = samples["sample"].tolist()
 template_sample = list_of_samples[0]
 

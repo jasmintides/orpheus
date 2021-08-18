@@ -8,4 +8,4 @@ ref:
     known_sites: ""
 outpath: /data/exploratory/Users/jasmine.alvarez/orpheus/outs
 aligner: kallisto
-skip_trimming: False
+skip_trimming: True

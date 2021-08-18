@@ -1,40 +1,48 @@
 def is_single_end(sample):
 	return pd.isnull(samples.loc[(sample), "fq2"])
 
-def get_fastq(sample):
-	fastq_dict = dict()
-	fastq_dict["r1"] = samples[(samples["sample"] == sample), "fq1" & samples["fq1" ==]
+#def get_fastq(wildcards):
+#	string_1 = samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]
+#	string_2 = samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]
 #	if not is_single_end(sample):
-#		fastq_dict["r2"] = samples.loc[samples.index.intersection(sample, "fq2")]
-	return fastq_dict
+#		return {'r1': string_1, 'r2': string_2}
+#	else:
+#		return {'r1': string_1}
 
-def get_trimmed(w):
-	trimmed_dict = dict()
-	string = "{}/{}/trimmed/{}_{}.fq.gz"
-	trimmed_dict["r1"] = string.format(w.outpath, w.ID, w.sample, 1)
-	if not is_single_end(w.sample):
-		trimmed_dict["r2"] = string.format(w.outpath, w.ID, w.sample, 2)
-	return trimmed_dict
+def get_fastq(wildcards):
+	if not is_single_end(wildcards.sample):
+		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0],
+			'r2': samples.loc[(wildcards.sample), ["fq2"]].dropna().values[0]}
+	else:
+		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0]}
 
-rule create_symbolic_link:
-	input:
-		unpack(get_fastq)
-	params:
-		skip_trimming = config["skip_trimming"]
-	output:
-		r1 = temp("{outpath}/{ID}/untrimmed/{sample}_1.fastq"),
-		r2 = temp("{outpath}/{ID}/untrimmed/{sample}_2.fastq")
-	run:
-		if skip_trimming(params.skip_trimming):
-			shell("ln -sr {input.r1} {output.r1}")
-		elif not is_single_end(wildcards.sample):
-			shell("ln -sr {input.r2} {output.r2}")
+#get_trimmed(w):
+#	trimmed_dict = dict()
+#	string = "{}/{}/trimmed/{}_{}.fq.gz"
+#	trimmed_dict["r1"] = string.format(w.outpath, w.ID, w.sample, 1)
+#	if not is_single_end(w.sample):
+#		trimmed_dict["r2"] = string.format(w.outpath, w.ID, w.sample, 2)
+#	return trimmed_dict
 
-def fastq_to_aligner(wildcards):
-	if wildcards.skip_trimming:
-		x = get_fastq(wildcards.sample)
-	elif not skip_trimming:
-		x = wildcards.get_trimmed(wildcards)
+#rule create_symbolic_link:
+#	input:
+#		unpack(get_fastq)
+#	params:
+#		skip_trimming = config["skip_trimming"]
+#	output:
+#		r1 = temp("{outpath}/{ID}/untrimmed/{sample}_1.fastq"),
+#		r2 = temp("{outpath}/{ID}/untrimmed/{sample}_2.fastq")
+#	run:
+#		if skip_trimming(params.skip_trimming):
+#			shell("ln -sr {input.r1} {output.r1}")
+#		elif not is_single_end(wildcards.sample):
+#			shell("ln -sr {input.r2} {output.r2}")
+
+def fastq_to_aligner(skip_trimming):
+	if skip_trimming:
+		x = unpack(get_fastq)
+	elif skip_trimming:
+		x = unpack(get_trimmed)
 	return x
 
 def get_transcript_counts(aligner):

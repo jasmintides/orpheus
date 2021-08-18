@@ -1,2 +1,2 @@
 sample	fq1	fq2	metadata
-reads	/data/exploratory/Users/jasmine.alvarez/test/reads_1.fastq.gz	/data/exploratory/Users/jasmine.alvarez/test/reads_2.fastq.gz	untreated
+SRR1738	/data/exploratory/Users/jasmine.alvarez/test/reads_1.fastq.gz	/data/exploratory/Users/jasmine.alvarez/test/reads_2.fastq.gz	untreated
