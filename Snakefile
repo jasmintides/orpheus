@@ -16,17 +16,22 @@ build = config["ref"]["build"]
 aligner = config["aligner"]
 skip_trimming = config["skip_trimming"]
 
-myoutput = list()
+expected_counts = list()
+tpm_counts = list()
 
 if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
-	myoutput.append("{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv")
-
+	expected_counts.append("{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv")
+	tpm_counts.append("{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv")
 elif aligner in ["STAR", "Star", "star"]:
-	myoutput.append("{outpath}/{ID}/RSEM/transcripts.expected.counts")
+	expected_counts.append("{outpath}/{ID}/RSEM/transcripts.expected.counts")
+	tpm_counts.append("{outpath}/{ID}/RSEM/transcripts.tpm.counts")
 
-rule all: input: expand(myoutput, outpath = outpath, ID = ID, sample = list_of_samples)
+rule all:
+	input:
+		expand(expected_counts, outpath = outpath, ID = ID),
+		expand(tpm_counts, outpath = outpath, ID = ID)
 
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
-include: "workflow/rules/02_align.smk"
-include: "workflow/rules/03_quant.smk"
+include: "workflow/rules/02_quant.smk"
+include: "workflow/rules/03_aggregate.smk"
