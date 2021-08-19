@@ -60,6 +60,14 @@ def name_counts_file(aligner):
 		counts_file.append(string)
 	return counts_file
 
+def get_kallisto_index(wildcards):
+	my_dict = dict()
+	if config["kallisto_index"] != "":
+		my_dict["index"] = config["kallisto_index"]
+	else:
+		my_dict["index"] = "{}/{}/kallisto/{}.idx".format(outpath, ID, build)
+	return my_dict
+
 def get_fq1_qc(wildcards):
 	return samples.loc[(wildcards.sample), ["fq1"]].dropna()
 

@@ -35,7 +35,8 @@ rule kallisto_index:
 rule kallisto_quant:
 	input:
 		unpack(fastq_to_aligner),
-		index = "{}/{}/kallisto/{}.idx".format(outpath, ID, build)
+		#index = "{}/{}/kallisto/{}.idx".format(outpath, ID, build),
+		unpack(get_kallisto_index)
 	params:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
 		outdir = "{outpath}/{ID}/kallisto/{sample}"
