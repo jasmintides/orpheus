@@ -6,5 +6,6 @@ ref:
     gtf: /data/exploratory/Users/jasmine.alvarez/test/transcripts.gtf.gz
     build: Human_hg38
     known_sites: ""
-outpath: /data/exploratory/Users/jasmine.alvarez/orpheus/outs
-aligner: STAR
+outpath: /data/exploratory/Users/jasmine.alvarez/bruhh
+aligner: kallisto
+skip_trimming: True

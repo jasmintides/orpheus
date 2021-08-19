@@ -20,6 +20,18 @@ def get_trimmed(wildcards):
 	else:
 		return {'fq1': "{outpath}/{ID}/trimmed/{sample}.fq.gz".format(**wildcards)}
 
+def fastq_to_aligner(wildcards):
+	my_dict = dict()
+	if config["skip_trimming"]:
+		my_dict["fq1"] = samples.loc[wildcards.sample, ["fq1"]].dropna().values[0]
+		if is_paired_end(wildcards.sample):
+			my_dict["fq2"] = samples.loc[wildcards.sample, ["fq2"]].dropna().values[0]
+	else:
+		my_dict["fq1"] = "{outpath}/{ID}/trimmed/{sample}_1.fq.gz"
+		if is_paired_end(wildcards.sample):
+			my_dict["fq2"] = "{outpath}/{ID}/trimmed/{sample}_2.fq.gz"
+	return my_dict
+
 def get_transcript_counts(aligner):
 	transcript_ids = list()
 	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
