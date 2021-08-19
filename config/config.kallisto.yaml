@@ -11,4 +11,3 @@ kallisto_index: /data/exploratory/genome/kallisto_test/transcripts.idx
 outpath: /data/exploratory/Users/jasmine.alvarez/orpheus/outs
 aligner: kallisto
 skip_trimming: True
-

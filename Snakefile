@@ -30,8 +30,11 @@ rule all:
 	input:
 		expand(expected_counts, outpath = outpath, ID = ID),
 		expand(tpm_counts, outpath = outpath, ID = ID)
+#		expand("{outpath}/{ID}/SummExp/{ID}.SummExp.Rds", outpath = outpath, ID = ID)
 
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
 include: "workflow/rules/02_quant.smk"
 include: "workflow/rules/03_aggregate.smk"
+include: "workflow/rules/write_se.smk"
+include: "workflow/rules/qc.smk"

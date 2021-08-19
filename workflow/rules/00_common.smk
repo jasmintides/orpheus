@@ -1,6 +1,9 @@
 def is_single_end(sample):
 	return pd.isnull(samples.loc[(sample), "fq2"])
 
+def is_paired_end(sample):
+	return pd.notnull(samples.loc[(sample), "fq2"])
+
 def get_fastq(wildcards):
 	if not is_single_end(wildcards.sample):
 		return {'r1': samples.loc[(wildcards.sample), ["fq1"]].dropna().values[0],
@@ -67,7 +70,7 @@ def name_all_counts_files(wildcards):
 		counts_dict["tpm"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
 	elif config["aligner"] in ["STAR", "Star", "star"]:
 		counts_dict["expected"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
-		counts_dict["tpm"] = "{outpath}/{wildcards}/kallisto/{sample}.transcripts.tpm.counts"
+		counts_dict["tpm"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
 	return counts_dict
 
 def get_kallisto_index(wildcards):
@@ -85,6 +88,16 @@ def get_star_index(wildcards):
 	else:
 		my_list.append("{}/{}/STAR/{}".format(outpath, ID, build))
 	return my_list
+
+def get_full_counts(aligner):
+	full_dict = dict()
+	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+		full_dict["expected"] = "{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv"
+		full_dict["tpm"] = "{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv"
+	elif config["aligner"] in ["STAR", "Star", "star"]:
+		full_dict["expected"] = "{outpath}/{ID}/RSEM/transcripts.expected.counts.tsv"
+		full_dict["tpm"] = "{outpath}/{ID}/RSEM/transcripts.tpm.counts.tsv"
+	return full_dict
 
 def get_fq1_qc(wildcards):
 	return samples.loc[(wildcards.sample), ["fq1"]].dropna()
