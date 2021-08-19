@@ -25,50 +25,50 @@ def fastq_to_aligner(wildcards):
 
 def get_transcript_counts(aligner):
 	transcript_ids = list()
-	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+	if aligner.lower() == "kallisto":
 		string = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv"
 		transcript_ids.append(string)
-	elif config["aligner"] in ["STAR", "Star", "star"]:
+	elif aligner.lower() == "star":
 		string = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
 		transcript_ids.append(string)
 	return transcript_ids
 
 def name_id_file(aligner):
 	id_file = list()
-	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+	if aligner.lower() == "kallisto":
 		string = "{}/{}/kallisto/template/transcripts_ids.txt".format(outpath, ID)
 		id_file.append(string)
-	elif config["aligner"] in ["STAR", "Star", "star"]:
+	elif aligner.lower() == "star":
 		string = "{}/{}/RSEM/template/transcripts_ids.txt".format(outpath, ID)
 		id_file.append(string)
 	return id_file
 
 def get_quant_outs(aligner):
 	quant_outs = list()
-	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+	if aligner.lower() == "kallisto":
 		string = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv",
 		quant_outs.append(string)
-	elif config["aligner"] in ["STAR", "Star", "star"]:
+	elif aligner.lower() == "star":
 		string = "{outpath}/{ID}/RSEM/{sample}.isoforms.results"
 		quant_outs.append(string)
 	return quant_outs
 
 def name_counts_file(aligner):
 	counts_file = list()
-	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+	if aligner.lower() == "kallisto":
 		string = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
 		counts_file.append(string)
-	elif config["aligner"] in ["STAR", "Star", "star"]:
+	elif aligner.lower() == "star":
 		string = "{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts"
 		counts_file.append(string)
 	return counts_file
 
 def name_all_counts_files(wildcards):
 	counts_dict = dict()
-	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+	if aligner.lower() == "kallisto":
 		counts_dict["expected"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
 		counts_dict["tpm"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
-	elif config["aligner"] in ["STAR", "Star", "star"]:
+	elif aligner.lower() == "star":
 		counts_dict["expected"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
 		counts_dict["tpm"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
 	return counts_dict
@@ -91,10 +91,10 @@ def get_star_index(wildcards):
 
 def get_full_counts(aligner):
 	full_dict = dict()
-	if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+	if aligner.lower() == "kallisto":
 		full_dict["expected"] = "{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv"
 		full_dict["tpm"] = "{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv"
-	elif config["aligner"] in ["STAR", "Star", "star"]:
+	elif aligner.lower() == "star":
 		full_dict["expected"] = "{outpath}/{ID}/RSEM/transcripts.expected.counts.tsv"
 		full_dict["tpm"] = "{outpath}/{ID}/RSEM/transcripts.tpm.counts.tsv"
 	return full_dict

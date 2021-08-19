@@ -6,7 +6,6 @@ ref:
     gtf: /data/exploratory/Users/jasmine.alvarez/test/transcripts.gtf.gz
     build: Human_hg38
     known_sites: ""
-star_index: ""
 kallisto_index: /data/exploratory/genome/kallisto_test/transcripts.idx
 outpath: /data/exploratory/Users/jasmine.alvarez/orpheus/outs
 aligner: kallisto

@@ -19,8 +19,8 @@ rule star_pe_multi:
 		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate "
 		"--quantMode TranscriptomeSAM"
 	output:
-		"{outpath}/{ID}/{aligner}/{sample}/Aligned.sortedByCoord.out.bam",
-		temp("{outpath}/{ID}/{aligner}/{sample}/Aligned.toTranscriptome.out.bam")
+		"{outpath}/{ID}/STAR/{sample}/Aligned.sortedByCoord.out.bam",
+		temp("{outpath}/{ID}/STAR/{sample}/Aligned.toTranscriptome.out.bam")
 	threads: 8
 	wrapper: "0.59.1/bio/star/align"
 
@@ -28,7 +28,7 @@ rule rsem_prepare_reference:
 	input: fasta = config["ref"]["fa"], gtf = config["ref"]["gtf"]
 	params: outpath = config["outpath"], ID = config["ID"], 
 		build = config["ref"]["build"]
-	output: directory("{}/{}/RSEM".format(outpath, ID, build))
+	output: directory("{}/{}/RSEM/{}".format(outpath, ID, build))
 	conda: "../envs/quant.yaml"
 	threads: 4
 	shell:
@@ -39,7 +39,7 @@ rule rsem_prepare_reference:
 
 rule rsem_calculate_expression:
 	input:
-		bam = "{outpath}/{ID}/star/{sample}/Aligned.toTranscriptome.out.bam",	
+		bam = "{outpath}/{ID}/STAR/{sample}/Aligned.toTranscriptome.out.bam",	
 		ref = directory("{}/{}/RSEM/{}".format(outpath, ID, build))
 	params:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
@@ -71,7 +71,6 @@ rule kallisto_index:
 rule kallisto_quant:
 	input:
 		unpack(fastq_to_aligner),
-		#index = "{}/{}/kallisto/{}.idx".format(outpath, ID, build),
 		unpack(get_kallisto_index)
 	params:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),

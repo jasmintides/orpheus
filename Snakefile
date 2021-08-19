@@ -2,9 +2,7 @@ from snakemake.utils import min_version
 min_version("6.0")
 
 import pandas as pd
-import re
 configfile: "config/config.test.yaml"
-#wildcard_constraints: sample = '\w'
 
 samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
 list_of_samples = samples["sample"].tolist()
@@ -16,13 +14,20 @@ build = config["ref"]["build"]
 aligner = config["aligner"]
 skip_trimming = config["skip_trimming"]
 
+if aligner.lower() == "kallisto":
+	if "kallisto_index" not in list(config.keys()):
+		config["kallisto_index"] = ""
+if aligner.lower() == "star":
+	if "STAR_index" not in list(config.keys()):
+		config["STAR_index"] = ""
+
 expected_counts = list()
 tpm_counts = list()
 
-if aligner in ["Kallisto", "KALLISTO", "kallisto"]:
+if aligner.lower() == "kallisto":
 	expected_counts.append("{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv")
 	tpm_counts.append("{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv")
-elif aligner in ["STAR", "Star", "star"]:
+if aligner.lower() == "star":
 	expected_counts.append("{outpath}/{ID}/RSEM/transcripts.expected.counts")
 	tpm_counts.append("{outpath}/{ID}/RSEM/transcripts.tpm.counts")
 
