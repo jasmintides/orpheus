@@ -7,16 +7,16 @@ rule create_transcript_counts:
 	input: *get_quant_outs(aligner)
 	output: **name_all_counts_files(aligner)
 	run:
-	if aligner.lower() == "kallisto":
-		shell("tail -n +2 {input} | cut -f4 | "
-			"sed '1i {wildcards.sample}' > {output.expected} ; "
-			"tail -n +2 {input} | cut -f5 | "
-			"sed '1i {wildcards.sample}' > {output.tpm}")
-	elif aligner.lower() == "star":
-		shell("tail -n +2 {input} | cut -f5 | "
-			"sed '1i {wildcards.sample}' > {output.expected} ; "
-			"tail -n +2 {input} | cut -f6 | "
-			"sed '1i {wildcards.sample}' > {output.tpm}")
+		if aligner.lower() == "kallisto":
+			shell("tail -n +2 {input} | cut -f4 | "
+				"sed '1i {wildcards.sample}' > {output.expected} ; "
+				"tail -n +2 {input} | cut -f5 | "
+				"sed '1i {wildcards.sample}' > {output.tpm}")
+		elif aligner.lower() == "star":
+			shell("tail -n +2 {input} | cut -f5 | "
+				"sed '1i {wildcards.sample}' > {output.expected} ; "
+				"tail -n +2 {input} | cut -f6 | "
+				"sed '1i {wildcards.sample}' > {output.tpm}")
 
 rule aggregate_transcript_counts:
 	input:
