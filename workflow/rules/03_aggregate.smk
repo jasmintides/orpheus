@@ -12,7 +12,7 @@ rule create_transcript_counts:
 				"sed '1i {wildcards.sample}' > {output.expected} ; "
 				"tail -n +2 {input} | cut -f5 | "
 				"sed '1i {wildcards.sample}' > {output.tpm}")
-		elif aligner == "star":
+		elif aligner.lower() == "star":
 			shell("tail -n +2 {input} | cut -f5 | "
 				"sed '1i {wildcards.sample}' > {output.expected} ; "
 				"tail -n +2 {input} | cut -f6 | "
