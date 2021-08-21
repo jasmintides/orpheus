@@ -19,7 +19,7 @@ if aligner.lower() == "kallisto":
 		config["kallisto_index"] = ""
 if aligner.lower() == "star":
 	if "STAR_index" not in list(config.keys()):
-		config["STAR_index"] = ""
+		config["star_index"] = ""
 
 expected_counts = list()
 tpm_counts = list()
@@ -27,7 +27,7 @@ tpm_counts = list()
 if aligner.lower() == "kallisto":
 	expected_counts.append("{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv")
 	tpm_counts.append("{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv")
-if aligner.lower() == "star":
+elif aligner.lower() == "star":
 	expected_counts.append("{outpath}/{ID}/RSEM/transcripts.expected.counts")
 	tpm_counts.append("{outpath}/{ID}/RSEM/transcripts.tpm.counts")
 
