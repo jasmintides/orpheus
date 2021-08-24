@@ -74,17 +74,20 @@ rule kallisto_quant:
 		unpack(get_kallisto_index)
 	params:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
-		outdir = "{outpath}/{ID}/kallisto/{sample}"
+		outdir = "{outpath}/{ID}/kallisto/{sample}",
+		gtf = config["ref"]["gtf"]
 	output:
 		counts_h5 = "{outpath}/{ID}/kallisto/{sample}/abundance.h5",
 		counts_tsv = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv",
 		log = "{outpath}/{ID}/kallisto/{sample}/run_info.json"
 	conda: "../envs/kallisto.yaml"
 	log: "{outpath}/{ID}/kallisto/log/{sample}.log"
+	benchmark: "{outpath}/{ID}/kallisto/benchmark/{sample}.log"
+	threads: 16
 	shell:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 "
-		"{input.fq1} {input.fq2} ; "
+		"-g {params.gtf} {input.fq1} {input.fq2} ; "
 		"elif [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {output[0]} -b 100 --single "
-		"-l 180 -s 20 {input.fq1} ; fi"
+		"-l 180 -s 20 -g {params.gtf} {input.fq1} ; fi"
