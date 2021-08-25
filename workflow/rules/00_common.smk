@@ -53,25 +53,25 @@ def get_quant_outs(aligner):
 		quant_outs.append(string)
 	return quant_outs
 
-def name_counts_file(aligner):
-	counts_file = list()
+def name_expected_file(aligner):
+	expected_file = list()
 	if aligner == "kallisto":
 		string = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
-		counts_file.append(string)
+		expected_file.append(string)
 	elif aligner == "star":
 		string = "{outpath}/{ID}/RSEM/{sample}.transcripts.expected.counts"
-		counts_file.append(string)
-	return counts_file
+		expected_file.append(string)
+	return expected_file
 
-def name_all_counts_files(wildcards):
-	counts_dict = dict()
+def name_tpm_file(aligner):
+	tpm_file = list()
 	if aligner == "kallisto":
-		counts_dict["expected"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
-		counts_dict["tpm"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
+		string = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
+		tpm_file.append(string)
 	elif aligner == "star":
-		counts_dict["expected"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.expected.counts"
-		counts_dict["tpm"] = "{outpath}/{ID}/kallisto/{sample}.transcripts.tpm.counts"
-	return counts_dict
+		string = "{outpath}/{ID}/RSEM/{sample}.transcripts.tpm.counts"
+		tpm_file.append(string)
+	return tpm_file
 
 def get_kallisto_index(wildcards):
 	my_dict = dict()

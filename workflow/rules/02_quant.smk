@@ -77,13 +77,11 @@ rule kallisto_quant:
 		outdir = "{outpath}/{ID}/kallisto/{sample}",
 		gtf = config["ref"]["gtf"]
 	output:
-		counts_h5 = "{outpath}/{ID}/kallisto/{sample}/abundance.h5",
-		counts_tsv = "{outpath}/{ID}/kallisto/{sample}/abundance.tsv",
-		log = "{outpath}/{ID}/kallisto/{sample}/run_info.json"
+		counts_h5 = temp("{outpath}/{ID}/kallisto/{sample}/abundance.h5"),
+		counts_tsv = temp("{outpath}/{ID}/kallisto/{sample}/abundance.tsv"),
+		log = temp("{outpath}/{ID}/kallisto/{sample}/run_info.json")
 	conda: "../envs/kallisto.yaml"
-	log: "{outpath}/{ID}/kallisto/log/{sample}.log"
 	benchmark: "{outpath}/{ID}/kallisto/benchmark/{sample}.log"
-	threads: 16
 	shell:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 "
