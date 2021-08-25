@@ -2,7 +2,7 @@ from snakemake.utils import min_version
 min_version("6.0")
 
 import pandas as pd
-configfile: "config/config.test.yaml"
+configfile: "config/config.kallisto.yaml"
 
 samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
 list_of_samples = samples["sample"].tolist()
@@ -33,9 +33,7 @@ elif aligner.lower() == "star":
 
 rule all:
 	input:
-		expand(expected_counts, outpath = outpath, ID = ID),
-		expand(tpm_counts, outpath = outpath, ID = ID)
-#		expand("{outpath}/{ID}/SummExp/{ID}.SummExp.Rds", outpath = outpath, ID = ID)
+		expand("{outpath}/{ID}/SummExp/{ID}.SummExp.Rds", outpath = outpath, ID = ID)
 
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_trim.smk"
