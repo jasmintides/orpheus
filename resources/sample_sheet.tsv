@@ -1,5 +1,0 @@
-sample	fq1	fq2	metadata1
-SRR1039508	resources/samples/SRR1039508_1.fq.gz	resources/samples/SRR1039508_2.fq.gz	untreated
-SRR1039509	resources/samples/SRR1039509_1.fq.gz	resources/samples/SRR1039509_2.fq.gz	albut
-SRR1039510	resources/samples/SRR1039510_1.fq.gz	resources/samples/SRR1039510_2.fq.gz	dex
-SRR1039511	resources/samples/SRR1039511_1.fq.gz	resources/samples/SRR1039511_2.fq.gz	albut+dex
