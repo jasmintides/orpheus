@@ -3,8 +3,6 @@ rule write_se:
 		**get_full_counts(aligner),
 		sample_sheet = config["samples"],
 		fastqc = "{}/{}/qc/multiqc_report.{}_data/multiqc_fastqc.txt".format(outpath, ID, ID)
-	params:
-		organism = config["organism"]
 	output:
 		"{outpath}/{ID}/SummExp/{ID}.SummExp.Rds"
 	conda:
