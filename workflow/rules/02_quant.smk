@@ -29,7 +29,7 @@ rule rsem_prepare_reference:
 	params: outpath = config["outpath"], ID = config["ID"], 
 		build = config["ref"]["build"]
 	output: directory("{}/{}/RSEM/{}".format(outpath, ID, build))
-	conda: "../envs/quant.yaml"
+	conda: "../envs/RSEM.yaml"
 	threads: 4
 	shell:
 		"rm -rf {params.outpath}/{params.ID}/RSEM/{params.build} ; "
@@ -49,7 +49,7 @@ rule rsem_calculate_expression:
 	threads:
 		4
 	conda:
-		"../envs/quant.yaml"
+		"../envs/RSEM.yaml"
 	shell:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"rsem-calculate-expression --num-threads {threads} "
@@ -86,6 +86,6 @@ rule kallisto_quant:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 "
 		"-g {params.gtf} {input.fq1} {input.fq2} ; "
-		"elif [[ $is_single_end == False ]]; then "
+		"elif [[ $is_single_end == True ]]; then "
 		"kallisto quant -i {input.index} -o {output[0]} -b 100 --single "
 		"-l 180 -s 20 -g {params.gtf} {input.fq1} ; fi"

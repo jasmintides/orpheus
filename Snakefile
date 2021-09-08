@@ -2,7 +2,7 @@ from snakemake.utils import min_version
 min_version("6.0")
 
 import pandas as pd
-configfile: "config/config.kallisto.yaml"
+configfile: "config/config.test.yaml"
 
 samples = pd.read_table(config["samples"], dtype = str).set_index("sample", drop = False)
 list_of_samples = samples["sample"].tolist()
@@ -36,8 +36,8 @@ rule all:
 		expand("{outpath}/{ID}/SummExp/{ID}.SummExp.Rds", outpath = outpath, ID = ID)
 
 include: "workflow/rules/00_common.smk"
-include: "workflow/rules/01_trim.smk"
+include: "workflow/rules/01_qc.smk"
+include: "workflow/rules/01p_trim.smk"
 include: "workflow/rules/02_quant.smk"
 include: "workflow/rules/03_aggregate.smk"
-include: "workflow/rules/write_se.smk"
-include: "workflow/rules/qc.smk"
+include: "workflow/rules/04_write_se.smk"

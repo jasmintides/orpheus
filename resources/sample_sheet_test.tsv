@@ -1,0 +1,2 @@
+sample	fq1	fq2	metadata
+sample	resources/reads_1.fastq.gz	resources/reads_2.fastq.gz	untreated
