@@ -85,7 +85,7 @@ rule kallisto_quant:
 	shell:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 "
-		"-g {params.gtf} {input[0]} ; "
+		"-g {params.gtf} {input[0]} {input[1]} ; "
 		"elif [[ $is_single_end == True ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 --single "
 		"-l 180 -s 20 -g {params.gtf} {input[0]} ; fi"
