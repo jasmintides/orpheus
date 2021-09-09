@@ -82,6 +82,7 @@ rule kallisto_quant:
 		log = temp("{outpath}/{ID}/kallisto/{sample}/run_info.json")
 	conda: "../envs/kallisto.yaml"
 	benchmark: "{outpath}/{ID}/kallisto/benchmark/{sample}.log"
+	resources: mem_mb = 4000
 	shell:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 "
