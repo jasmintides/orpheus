@@ -33,7 +33,8 @@ elif aligner.lower() == "star":
 
 rule all:
 	input:
-		expand("{outpath}/{ID}/SummExp/{ID}.SummExp.Rds", outpath = outpath, ID = ID)
+		"{}/{}/SummExp/{}.SummExp.Rds".format(outpath, ID, ID),
+		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID)
 
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_qc.smk"

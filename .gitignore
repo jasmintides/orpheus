@@ -9,11 +9,6 @@ workflow/rules/.nfs*
 benchmarks/*
 workflow/rules/*.swp
 snpEff*
-config/config.*ADAR.yaml
-data/samples/unt_*.fastq
-data/samples/untreated_*.fastq.gz
-data/sample_sheet_3.tsv
-config/config.rRNA_test.yaml
-config/config.20210412_test.yaml
-config/\.*swp
 .tests
+config/*
+!config/config.test.yaml
