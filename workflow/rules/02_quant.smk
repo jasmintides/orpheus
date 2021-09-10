@@ -44,8 +44,7 @@ rule rsem_calculate_expression:
 	params:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
 		build = config["ref"]["build"]
-	output:
-		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.results")
+	output: temp("{outpath}/{ID}/RSEM/{sample}.isoforms.results")
 	log: "{outpath}/{ID}/RSEM/log/{sample}.txt"
 	benchmark: "{outpath}/{ID}/RSEM/benchmark/{sample}.txt"
 	conda:

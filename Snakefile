@@ -21,16 +21,6 @@ if aligner.lower() == "star":
 	if "STAR_index" not in list(config.keys()):
 		config["star_index"] = ""
 
-expected_counts = list()
-tpm_counts = list()
-
-if aligner.lower() == "kallisto":
-	expected_counts.append("{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv")
-	tpm_counts.append("{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv")
-elif aligner.lower() == "star":
-	expected_counts.append("{outpath}/{ID}/RSEM/transcripts.expected.counts")
-	tpm_counts.append("{outpath}/{ID}/RSEM/transcripts.tpm.counts")
-
 rule all:
 	input:
 		"{}/{}/SummExp/{}.SummExp.Rds".format(outpath, ID, ID),
