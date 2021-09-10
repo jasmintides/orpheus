@@ -8,7 +8,7 @@ rule trimmomatic_pe:
 	params: trimmer = ["TRAILING:3"], extra = "", compression_level = "-9"
 	log: "{outpath}/{ID}/trimmed/log/{sample}.txt"
 	benchmark: "{outpath}/{ID}/trimmed/benchmark/{sample}.txt"
-	threads: 8
+	threads: 32
 	wrapper: "0.67.0/bio/trimmomatic/pe"
 
 rule trimmomatic:
@@ -16,5 +16,5 @@ rule trimmomatic:
 	output: temp("{outpath}/{ID}/trimmed/{sample}.fq.gz")
 	params: trimmer = ["TRAILING:3"], extra = "", compression_level = "-9"
 	benchmark: "{outpath}/{ID}/trimmed/log/{sample}.txt"
-	threads: 8
+	threads: 32
 	wrapper: "0.67.0/bio/trimmomatic/se"

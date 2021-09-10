@@ -7,6 +7,7 @@ rule star_index_new:
 	output: temp(directory("{}/{}/STAR/{}".format(outpath, ID, build)))
 	log: "{}/{}/STAR/log/{}_index.txt".format(outpath, ID, build)
 	benchmark: "{}/{}/STAR/benchmark/{}_index.txt".format(outpath, ID, build)
+	threads: 8
 	wrapper: "0.59.1/bio/star/index"
 
 rule star_pe_multi:
