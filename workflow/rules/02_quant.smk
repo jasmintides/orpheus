@@ -15,7 +15,7 @@ rule star_pe_multi:
 		lambda wildcards: get_star_index(wildcards),
 		unpack(fastq_to_aligner)
 	params:
-		index = "{}/{}/{}".format(outpath, ID, config["ref"]["build"]),
+		index = "{}/{}/STAR/{}".format(outpath, ID, build),
 		extra = "--twopassMode Basic --quantMode TranscriptomeSAM"
 	output:
 		temp("{outpath}/{ID}/STAR/{sample}/Aligned.toTranscriptome.out.bam")
@@ -36,7 +36,7 @@ rule rsem_prepare_reference:
 		"rm -rf {params.outpath}/{params.ID}/RSEM/{params.build} ; "
 		"mkdir {params.outpath}/{params.ID}/RSEM/{params.build} ; "
 		"rsem-prepare-reference --num-threads {threads} --gtf {input.gtf} "
-		"{input.fasta} {params.outpath}/{params.ID}/RSEM/{params.build}"
+		"{input.fasta} {params.outpath}/{params.ID}/RSEM/{params.build}/{params.build}"
 
 rule rsem_calculate_expression:
 	input:
