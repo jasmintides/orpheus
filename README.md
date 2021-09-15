@@ -1,5 +1,7 @@
 <h1>Orpheus</h1>
 
+![alt text](img/Orpheus_schema.jpg)
+
 Orpheus is a Snakemake workflow that performs quality control, alignment, and
 quantification of raw sequencing data. The learning curve in bioinformatics
 pipeline development, coupled with the large size of input datasets and limited
