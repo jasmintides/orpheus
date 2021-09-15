@@ -12,3 +12,5 @@ snpEff*
 .tests
 config/*
 !config/config.test.yaml
+Snakefile*
+!Snakefile$
