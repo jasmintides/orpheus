@@ -1,6 +1,8 @@
 <h1>Orpheus</h1>
 
-![alt text](img/Orpheus_schema.jpg)
+<p align="center">
+<img width="720" height="480" src="img/Orpheus_schema.jpg">
+</p>
 
 Orpheus is a Snakemake workflow that performs quality control, alignment, and
 quantification of raw sequencing data. The learning curve in bioinformatics
