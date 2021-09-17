@@ -1,4 +1,4 @@
-<h1>Orpheus</h1>
+<h1>Orpheus RNA-seq pipeline</h1>
 
 <p align="center">
 <img src="img/Orpheus_schema.svg">
