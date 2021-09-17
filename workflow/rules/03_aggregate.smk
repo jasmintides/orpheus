@@ -28,8 +28,7 @@ rule aggregate_transcript_counts:
 		all_tpm = expand(name_tpm_file(aligner),
 			outpath = outpath, ID = ID, sample = list_of_samples)
 	output: 
-		expected_counts = expected_counts,
-		tpm_counts = tpm_counts
+		**get_full_counts(aligner)
 	shell:
-		"paste {input[0]} {input.all_expected} > {output.expected_counts} ; "
-		"paste {input[0]} {input.all_tpm} > {output.tpm_counts}"
+		"paste {input[0]} {input.all_expected} > {output.expected} ; "
+		"paste {input[0]} {input.all_tpm} > {output.tpm}"

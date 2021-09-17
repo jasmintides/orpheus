@@ -21,19 +21,10 @@ if aligner.lower() == "star":
 	if "STAR_index" not in list(config.keys()):
 		config["star_index"] = ""
 
-expected_counts = list()
-tpm_counts = list()
-
-if aligner.lower() == "kallisto":
-	expected_counts.append("{outpath}/{ID}/kallisto/transcripts.expected.counts.tsv")
-	tpm_counts.append("{outpath}/{ID}/kallisto/transcripts.tpm.counts.tsv")
-elif aligner.lower() == "star":
-	expected_counts.append("{outpath}/{ID}/RSEM/transcripts.expected.counts")
-	tpm_counts.append("{outpath}/{ID}/RSEM/transcripts.tpm.counts")
-
 rule all:
 	input:
-		expand("{outpath}/{ID}/SummExp/{ID}.SummExp.Rds", outpath = outpath, ID = ID)
+		"{}/{}/SummExp/{}.SummExp.Rds".format(outpath, ID, ID),
+		"{}/{}/qc/multiqc_report.{}.html".format(outpath, ID, ID)
 
 include: "workflow/rules/00_common.smk"
 include: "workflow/rules/01_qc.smk"

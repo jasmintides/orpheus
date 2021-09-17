@@ -2,12 +2,12 @@ rule star_index_new:
 	input: 
 		fasta = config["ref"]["fa"], 
 		gtf = config["ref"]["gtf"]
-	threads: 8
 	params:
 		extra = ""
-	output: directory("{}/{}/STAR/{}".format(outpath, ID, build))
-	benchmark: "benchmarks/align/00_star_index.txt"
-	log: "logs/star_index_{}.log".format(build)
+	output: temp(directory("{}/{}/STAR/{}".format(outpath, ID, build)))
+	log: "{}/{}/STAR/log/{}_index.txt".format(outpath, ID, build)
+	benchmark: "{}/{}/STAR/benchmark/{}_index.txt".format(outpath, ID, build)
+	threads: 8
 	wrapper: "0.59.1/bio/star/index"
 
 rule star_pe_multi:
@@ -15,12 +15,12 @@ rule star_pe_multi:
 		lambda wildcards: get_star_index(wildcards),
 		unpack(fastq_to_aligner)
 	params:
-		index = "{}/{}/{}".format(outpath, ID, config["ref"]["build"]),
-		extra = "--twopassMode Basic --outSAMtype BAM SortedByCoordinate "
-		"--quantMode TranscriptomeSAM"
+		index = "{}/{}/STAR/{}".format(outpath, ID, build),
+		extra = "--twopassMode Basic --quantMode TranscriptomeSAM"
 	output:
-		"{outpath}/{ID}/STAR/{sample}/Aligned.sortedByCoord.out.bam",
 		temp("{outpath}/{ID}/STAR/{sample}/Aligned.toTranscriptome.out.bam")
+	log: "{outpath}/{ID}/STAR/log/{sample}.txt"
+	benchmark: "{outpath}/{ID}/STAR/benchmark/{sample}.txt"
 	threads: 8
 	wrapper: "0.59.1/bio/star/align"
 
@@ -28,14 +28,15 @@ rule rsem_prepare_reference:
 	input: fasta = config["ref"]["fa"], gtf = config["ref"]["gtf"]
 	params: outpath = config["outpath"], ID = config["ID"], 
 		build = config["ref"]["build"]
-	output: directory("{}/{}/RSEM/{}".format(outpath, ID, build))
+	output: temp(directory("{}/{}/RSEM/{}".format(outpath, ID, build)))
+	log: "{}/{}/RSEM/log/{}_index.txt".format(outpath, ID, build)
+	benchmark: "{}/{}/RSEM/benchmark/{}_index.txt".format(outpath, ID, build)
 	conda: "../envs/RSEM.yaml"
-	threads: 4
 	shell:
 		"rm -rf {params.outpath}/{params.ID}/RSEM/{params.build} ; "
 		"mkdir {params.outpath}/{params.ID}/RSEM/{params.build} ; "
 		"rsem-prepare-reference --num-threads {threads} --gtf {input.gtf} "
-		"{input.fasta} {params.outpath}/{params.ID}/RSEM/{params.build}"
+		"{input.fasta} {params.outpath}/{params.ID}/RSEM/{params.build}/{params.build}"
 
 rule rsem_calculate_expression:
 	input:
@@ -44,10 +45,9 @@ rule rsem_calculate_expression:
 	params:
 		is_single_end = lambda wildcards: is_single_end(wildcards.sample),
 		build = config["ref"]["build"]
-	output:
-		temp("{outpath}/{ID}/RSEM/{sample}.isoforms.results")
-	threads:
-		4
+	output: temp("{outpath}/{ID}/RSEM/{sample}.isoforms.results")
+	log: "{outpath}/{ID}/RSEM/log/{sample}.txt"
+	benchmark: "{outpath}/{ID}/RSEM/benchmark/{sample}.txt"
 	conda:
 		"../envs/RSEM.yaml"
 	shell:
@@ -64,8 +64,10 @@ rule rsem_calculate_expression:
 
 rule kallisto_index:
 	input: fasta = config["ref"]["fa"]
-	output: "{}/{}/kallisto/{}.idx".format(outpath, ID, build)
+	output: temp("{}/{}/kallisto/{}.idx".format(outpath, ID, build))
 	conda: "../envs/kallisto.yaml"
+	log: "{}/{}/kallisto/log/{}_index.log".format(outpath, ID, build)
+	benchmark: "{}/{}/kallisto/benchmark/{}_index.log".format(outpath, ID, build)
 	shell: "kallisto index -i {output} {input}"
 
 rule kallisto_quant:
@@ -81,7 +83,9 @@ rule kallisto_quant:
 		counts_tsv = temp("{outpath}/{ID}/kallisto/{sample}/abundance.tsv"),
 		log = temp("{outpath}/{ID}/kallisto/{sample}/run_info.json")
 	conda: "../envs/kallisto.yaml"
+	log: "{outpath}/{ID}/kallisto/log/{sample}.log"
 	benchmark: "{outpath}/{ID}/kallisto/benchmark/{sample}.log"
+	resources: mem_mb = 4000
 	shell:
 		"is_single_end={params.is_single_end} ; if [[ $is_single_end == False ]]; then "
 		"kallisto quant -i {input.index} -o {params.outdir} -b 100 "
