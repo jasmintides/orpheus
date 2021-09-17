@@ -4,7 +4,7 @@
 <img src="img/Orpheus_schema.svg">
 </p>
 
-Orpheus is an RNA-seq pipeline that performs quality control, alignment, and 
+**orpheus** is an RNA-seq pipeline that performs quality control, alignment, and 
 quantification on raw sequencing data. Processing big data with limited 
 computational resources presents a challenge to time-sensitive exploratory
 data science. The Data Science team has developed a modular, scalable pipeline 
