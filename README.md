@@ -1,7 +1,7 @@
 <h1>orpheus: RNA-seq quantification</h1>
 
 <p align="center">
-<img src="img/Orpheus_schema.svg">
+<img src="img/orpheus_schema.svg">
 </p>
 
 **orpheus** is a Snakemake workflow that performs quality control, alignment, and 
